@@ -1,0 +1,10 @@
+{
+ "name": "tips-check",
+ "version": "0.1.0",
+ "title": "Empirical Science tips check",
+ "author": "test",
+ "factorio_version": "2.0",
+ "dependencies": [
+  "empirical-science"
+ ]
+}

@@ -1,0 +1,2 @@
+{"name": "es-upgrade-setup", "version": "0.1.0", "title": "Empirical Science upgrade test: old-version base", "author": "kinelhu",
+ "factorio_version": "2.0", "dependencies": ["empirical-science"]}

@@ -1,0 +1,13 @@
+.DS_Store
+*.zip
+vendor/
+vendor/worktrees/
+tests/es-sampler/sample.lua
+__pycache__/
+tests/es-playtest-kit/kit_choice.lua
+docs/world_report/out/
+tests/es-menu-preview/scene.lua
+tests/es-scene-survey/augment.lua
+tests/es-scene-workshop/mode.lua
+tests/es-page-shots/mode.lua
+dist/

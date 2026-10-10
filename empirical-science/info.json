@@ -1,0 +1,14 @@
+{
+  "name": "empirical-science",
+  "version": "0.72.0",
+  "title": "Empirical Science",
+  "author": "kinelhu",
+  "description": "Feed ordinary items into machines as additives: some raise yield, speed or cleanliness. Which additive helps which recipe is hidden and differs on every map. Run trials, analyse the samples, and dose your factory with what you prove.",
+  "factorio_version": "2.0",
+  "dependencies": [
+    "base >= 2.0",
+    "factorio-charts >= 1.1.0",
+    "? space-age >= 2.0",
+    "? quality >= 2.0"
+  ]
+}

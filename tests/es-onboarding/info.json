@@ -1,0 +1,2 @@
+{"name": "es-onboarding", "version": "0.1.0", "title": "Empirical Science onboarding save (builds a save)", "author": "kinelhu",
+ "factorio_version": "2.0", "dependencies": ["empirical-science"]}

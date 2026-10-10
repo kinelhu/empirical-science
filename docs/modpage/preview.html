@@ -1,0 +1,148 @@
+<title>Empirical Science mod page</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&display=swap">
+<style>
+/* Layout: one column, the way the mod portal sets a description, framed like a Factorio window on its dark ground. */
+:root {
+  --ground: #1e1d1e;      /* the portal's page */
+  --panel: #313031;       /* a Factorio window's body */
+  --inset: #242324;       /* a sunken frame inside it */
+  --text: #e3e3e3;
+  --muted: #a8a6a3;
+  --heading: #ffe6c0;     /* Factorio's window titles */
+  --accent: #ff9f1c;      /* the orange of a selected button */
+  --edge: #0f0f0f;
+  --face: "Titillium Web", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+body { background: var(--ground); color: var(--text); font-family: var(--face); font-size: 17px; line-height: 1.55; }
+.page { max-width: 940px; margin: 0 auto; padding-inline: 16px; padding-block: 32px 64px; }
+.window { background: var(--panel); border: 1px solid var(--edge); box-shadow: 0 0 0 1px #3d3c3d inset, 0 6px 24px rgb(0 0 0 / .5); }
+.titlebar { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  padding: 10px 20px; border-bottom: 1px solid var(--edge); }
+.titlebar h1 { margin: 0; color: var(--heading); font-size: 1.6rem; font-weight: 700; text-wrap: balance; }
+.meta { color: var(--muted); font-size: .9rem; letter-spacing: .02em; }
+.body { padding: 20px; display: grid; gap: 22px; }
+.lede { font-size: 1.2rem; margin: 0; max-width: 62ch; }
+h2 { margin: 12px 0 0; color: var(--heading); font-size: 1.3rem; font-weight: 600; text-wrap: balance; }
+h3 { margin: 4px 0 0; color: var(--heading); font-size: 1.05rem; font-weight: 600; }
+p, ul { margin: 0; max-width: 68ch; }
+ul { padding-left: 1.2em; display: grid; gap: 8px; }
+li::marker { color: var(--accent); }
+strong { color: var(--heading); font-weight: 600; }
+code { font-size: .92em; background: var(--inset); padding: 1px 5px; }
+figure { margin: 0; display: grid; gap: 6px; }
+figure img { display: block; width: 100%; height: auto; border: 1px solid var(--edge); background: var(--inset); }
+figcaption { color: var(--muted); font-size: .9rem; }
+.hero img { border: 0; }
+.shots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: start; }
+.note { color: var(--muted); font-size: .9rem; border-top: 1px solid var(--edge); padding-top: 14px; }
+@media (max-width: 640px) { .shots { grid-template-columns: minmax(0, 1fr); } body { font-size: 16px; } }
+</style>
+
+<div class="page">
+  <article class="window">
+    <header class="titlebar">
+      <h1>Empirical Science</h1>
+      <span class="meta">Factorio 2.0 · Space Age and Quality optional · requires Factorio Charts</span>
+    </header>
+    <div class="body">
+<p class="lede">Feed a machine an ordinary item beside its recipe, such as coal, stone or sulfur, and it can make more products, run slower or pollute less. Which additive helps which recipe is hidden, and it differs on every map. Test benches run trials, analysis stations read the samples, and hoppers dose your machines with what works.</p>
+<figure><img src="images/loop.png" alt="Trial, sample, analysis, dosed production, findings"></figure>
+<h2>How it plays</h2>
+<ul>
+<li><strong>Trials.</strong> A test bench makes a batch of a recipe with a dose of an additive, taken from a hopper beside it. Most of the batch comes out, and one sample with it.</li>
+<li><strong>Analysis.</strong> An analysis station reads samples against a control, using science packs, and gives each result an estimate and a range. More samples narrow the range.</li>
+<li><strong>Empirical science packs.</strong> Analysing samples makes empirical science packs, which labs use for the mod's technologies. A sample makes more packs when its question has few results.</li>
+<li><strong>Production.</strong> A hopper doses the machines it touches that make a recipe the mod studies. A fluid hopper doses the machines along its sides. A dose that works makes more products per craft. Solid additives leave a residue, which leaves the machine with its products.</li>
+<li><strong>Findings.</strong> A finding is an effect you proved and then produced with. Meet each reached planet's quota and enough major findings to finish. You can keep playing after.</li>
+</ul>
+<figure><img src="images/dosing.png" alt="A hopper doses a machine: more products, and a residue"></figure>
+<h2>A different world on every map</h2>
+<p>The effects are hidden and differ on every map. The mod studies 35 recipes and 33 additives. Additives belong to families and recipes to processes, so an additive that helps gears usually helps steel too. Results from another map do not apply to yours.</p>
+<p>Testing every mixture of additives, at every dose, temperature and planet, would take about 19 billion trials. The Theory tab fits the family laws to your evidence and says which trials are worth running.</p>
+<p>An additive that adds products can also slow the machine, change its pollution, or change its power use, and differently on different processes. Some additives help at a low dose and harm at a high one.</p>
+<h2>The Empirical Science screen</h2>
+<ul>
+<li><strong>Screening:</strong> every additive tried on a recipe, at its best dose: its effect on yield, speed, pollution and power, its net gain after its own cost, and the empirical science packs its next sample makes.</li>
+</ul>
+<figure><img src="images/screening.png" alt="Screening: every additive tried on iron gear wheels"><figcaption>Screening: every additive tried on iron gear wheels</figcaption></figure>
+<ul>
+<li><strong>Dose-response:</strong> one additive's results dose by dose, a fitted curve and the best dose with its range. Automatic picks the model, or pick one.</li>
+</ul>
+<figure><img src="images/dose-response.png" alt="Dose-response: stone on iron gear wheels, a curve fitted, the best dose found"><figcaption>Dose-response: stone on iron gear wheels, a curve fitted, the best dose found</figcaption></figure>
+<ul>
+<li><strong>Mixtures:</strong> additives dosed together, on a heat map.</li>
+</ul>
+<figure><img src="images/mixtures.png" alt="Mixtures: coal and stone together on iron gear wheels, a fitted surface"><figcaption>Mixtures: coal and stone together on iron gear wheels, a fitted surface</figcaption></figure>
+<ul>
+<li><strong>Coverage:</strong> which recipes and families you have tested, and where the gaps are.</li>
+</ul>
+<figure><img src="images/coverage.png" alt="Coverage: where the evidence is, and which families were tried"><figcaption>Coverage: where the evidence is, and which families were tried</figcaption></figure>
+<ul>
+<li><strong>Theory:</strong> fits the family laws to all your evidence and suggests what to test next.</li>
+<li><strong>Findings:</strong> each planet's quota and the major findings, with what is left to prove or produce, and when each was completed.</li>
+</ul>
+<figure><img src="images/findings.png" alt="Findings: Nauvis's quota complete"><figcaption>Findings: Nauvis's quota complete</figcaption></figure>
+<ul>
+<li><strong>Presets:</strong> save a dose you trust, then pick it from any machine's dose panel.</li>
+<li><strong>Progress:</strong> samples, empirical science packs, settled questions, findings and products made with a dose, over game time.</li>
+<li><strong>Notebook:</strong> one page of notes, shared by the force and saved with the map.</li>
+</ul>
+<h2>Research</h2>
+<ul>
+<li><strong>Analysis precision</strong> narrows every range. <strong>Analysis productivity</strong> analyses more samples per science pack.</li>
+<li><strong>Additive mixing:</strong> several additives in one machine.</li>
+<li><strong>Fluid heating:</strong> heaters that bring a fluid additive to its best temperature.</li>
+<li><strong>Lab circuits 1 to 3:</strong> the circuit features below, in turn.</li>
+<li>Premixes of two additives, and catalysts activated from residues, are unlocked by evidence, not by research.</li>
+</ul>
+<h2>By era and planet</h2>
+<ul>
+<li><strong>Early:</strong> coal, stone, stone brick and copper cable.</li>
+<li><strong>Oil era:</strong> sulfur, plastic, solid fuel, oils, acids, premixes and catalysts.</li>
+<li><strong>Fluid heating:</strong> fluids and liquid premixes work best at a temperature of their own. Evidence is kept per temperature band. A curve still rising in the hottest band means the best temperature is higher.</li>
+</ul>
+<h3>With Space Age</h3>
+<ul>
+<li><strong>Vulcanus:</strong> the pressure heater reaches the hot optima on any planet, burning pressure charges made from tungsten carbide.</li>
+<li><strong>Aquilo:</strong> the cryogenic plant chills a fluid with cold fluoroketone, and the fluid chiller cools liquid premixes, burning cold charges.</li>
+<li><strong>Gleba:</strong> living additives (yumako mash, jelly, nutrients, pentapod eggs, bioflux) work best at a ripeness of their own. Age them in hoppers and chests, or dose them fresh. Eggs left too long hatch.</li>
+<li><strong>Fulgora:</strong> recycling scrap sometimes recovers a scrap sample, a product that met an additive at some dose. A station reads it as free evidence. Scrap samples spoil fast and make no empirical science packs. Past a limit per question, scrap samples read as unreadable.</li>
+<li><strong>Space platforms:</strong> space science and promethium science can only be studied in orbit.</li>
+</ul>
+<h3>With Quality</h3>
+<ul>
+<li>A few quality additives raise the chance of a better product. Other additives do not change quality.</li>
+</ul>
+<h2>Circuits</h2>
+<p>Circuits are optional.</p>
+<ul>
+<li>A station's port sends its results to the wire on four pages: results per additive, what to screen next, one selected result, and the best tested composition.</li>
+<li>A station takes its target, its page and a selected additive from the wire. The selected additive's dose comes with it, so a lab can choose its next trial by itself.</li>
+<li>A machine's dose can be set by signal, so a line can retool itself.</li>
+<li>Hoppers can report how many of their machines are dosed, short of an additive, or full of residue.</li>
+</ul>
+<h2>Settings</h2>
+<ul>
+<li><strong>World strength</strong> (startup, set when the map is created): Standard, or Harsh, where trials cost more, results are noisier, and fewer additives pay.</li>
+<li><strong>Empirical science packs in endless technologies</strong> (startup, on by default): vanilla's endless technologies, such as mining productivity and weapon damage, also cost empirical science packs.</li>
+<li><strong>Empirical science packs in mainline technologies</strong> (startup): later vanilla technologies also cost empirical science packs.</li>
+<li><strong>Derive targets</strong> (startup): makes every science pack a lab accepts something to study, for mods that do not register their own.</li>
+<li><strong>Science seed</strong> (map setting): maps with the same science seed share the same hidden world. 0 uses the map's own seed.</li>
+</ul>
+<h2>Multiplayer and saves</h2>
+<ul>
+<li>Evidence, presets, findings and the notebook belong to the force.</li>
+<li>Stations analyse one sample every five seconds each. A large lab needs several.</li>
+<li>Pre-1.0: updates can change saved stations, hoppers and evidence. The changelog says when.</li>
+</ul>
+<h2>Compatibility</h2>
+<ul>
+<li>Requires Factorio Charts. Space Age and Quality are optional.</li>
+<li>Other mods can register their own recipes to study: see the <code>es-targets</code> mod-data.</li>
+</ul>
+    </div>
+  </article>
+</div>

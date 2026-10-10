@@ -1,0 +1,2 @@
+{"name": "es-showcase", "version": "0.1.0", "title": "Empirical Science showcase factory (builds a save)", "author": "kinelhu",
+ "factorio_version": "2.0", "dependencies": ["empirical-science"]}

@@ -1,0 +1,54 @@
+<title>Empirical Science mod page</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&display=swap">
+<style>
+/* Layout: one column, the way the mod portal sets a description, framed like a Factorio window on its dark ground. */
+:root {
+  --ground: #1e1d1e;      /* the portal's page */
+  --panel: #313031;       /* a Factorio window's body */
+  --inset: #242324;       /* a sunken frame inside it */
+  --text: #e3e3e3;
+  --muted: #a8a6a3;
+  --heading: #ffe6c0;     /* Factorio's window titles */
+  --accent: #ff9f1c;      /* the orange of a selected button */
+  --edge: #0f0f0f;
+  --face: "Titillium Web", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+body { background: var(--ground); color: var(--text); font-family: var(--face); font-size: 17px; line-height: 1.55; }
+.page { max-width: 940px; margin: 0 auto; padding-inline: 16px; padding-block: 32px 64px; }
+.window { background: var(--panel); border: 1px solid var(--edge); box-shadow: 0 0 0 1px #3d3c3d inset, 0 6px 24px rgb(0 0 0 / .5); }
+.titlebar { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  padding: 10px 20px; border-bottom: 1px solid var(--edge); }
+.titlebar h1 { margin: 0; color: var(--heading); font-size: 1.6rem; font-weight: 700; text-wrap: balance; }
+.meta { color: var(--muted); font-size: .9rem; letter-spacing: .02em; }
+.body { padding: 20px; display: grid; gap: 22px; }
+.lede { font-size: 1.2rem; margin: 0; max-width: 62ch; }
+h2 { margin: 12px 0 0; color: var(--heading); font-size: 1.3rem; font-weight: 600; text-wrap: balance; }
+h3 { margin: 4px 0 0; color: var(--heading); font-size: 1.05rem; font-weight: 600; }
+p, ul { margin: 0; max-width: 68ch; }
+ul { padding-left: 1.2em; display: grid; gap: 8px; }
+li::marker { color: var(--accent); }
+strong { color: var(--heading); font-weight: 600; }
+code { font-size: .92em; background: var(--inset); padding: 1px 5px; }
+figure { margin: 0; display: grid; gap: 6px; }
+figure img { display: block; width: 100%; height: auto; border: 1px solid var(--edge); background: var(--inset); }
+figcaption { color: var(--muted); font-size: .9rem; }
+.hero img { border: 0; }
+.shots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: start; }
+.note { color: var(--muted); font-size: .9rem; border-top: 1px solid var(--edge); padding-top: 14px; }
+@media (max-width: 640px) { .shots { grid-template-columns: minmax(0, 1fr); } body { font-size: 16px; } }
+</style>
+
+<div class="page">
+  <article class="window">
+    <header class="titlebar">
+      <h1>{title}</h1>
+      <span class="meta">Factorio 2.0 · Space Age and Quality optional · requires Factorio Charts</span>
+    </header>
+    <div class="body">
+{body}
+    </div>
+  </article>
+</div>

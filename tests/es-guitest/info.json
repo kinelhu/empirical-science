@@ -1,0 +1,8 @@
+{
+  "name": "es-guitest",
+  "version": "0.1.0",
+  "title": "Empirical Science GUI smoke test",
+  "author": "kinelhu",
+  "factorio_version": "2.0",
+  "dependencies": ["empirical-science"]
+}

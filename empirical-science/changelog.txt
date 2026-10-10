@@ -1,0 +1,727 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.72.0
+Date: 2026-10-10
+  Changes:
+    - Analysis stations read one sample every 5 seconds instead of every half second. A large lab needs more than one station.
+    - The Screening grid's Pays? column is now Net: the gain after the additive's own cost at the best dose, coloured like the other columns. Hover it for the samples still needed. The Dose column is renamed Best dose.
+    - Best dose is the tested dose whose yield gain has the highest lower bound, not the highest mean, so it no longer jumps between doses as samples arrive. The port's best dose follows it.
+    - A dosed machine's panel shows what it made with its dose and how many of those the dose added, counted from when the dose was set.
+    - New Screening column, Packs per sample: the empirical science packs the next sample of each additive makes.
+    - The station port has four pages, every value on a signal whose icon says what it is: Results, Screening (Lab circuits 2), Selected result (Lab circuits 2) and Best composition (Lab circuits 3). The letter signals are gone. An additive's signal on the station's input selects it on every page, which adds its dose: a lab can choose what to screen next, and at what dose, from one page. The Station signals tip lists the pages.
+    - The Empirical Science screen lists an additive once you can make it or have evidence on it, as the dose picker already did.
+    - The station window shows Unreadable and Failed trials only once they count something.
+    - Samples are one item per science pack, the pack drawn on the cover: an automation science pack sample, a logistic science pack sample, and so on. Samples in a save become their kind.
+    - An analysis station takes the samples of the science packs it holds, and holds four waiting. A station with red and green packs splits its waiting slots between their samples. Stations along a belt now share its samples.
+    - Analysis stations are smaller: four slots for waiting samples, two for empirical science packs, one per science pack, and scrap samples' slots with Space Age. Station blueprints from before 0.72 lose the station, and science packs held in a station from before 0.72 may be lost.
+    - Analysis stations show the lab's working animation while they analyse.
+    - Alternative recipes are removed, with their technology, trials and adoption. Machines set to one go back to having no recipe. Maps keep their hidden world.
+    - Analysis precision 1 costs half as much, so a first study pays for it.
+    - Per-target productivity research is removed. Levels researched in a save are lost with it. Research data now joins the packs of vanilla's endless technologies, such as mining productivity, worker robot speed and weapon damage.
+    - Research data from a question now falls with all its samples, at every dose: testing each dose once no longer pays the full rate on every sample. A set of additives earns the least until each of them has been tested alone on that target.
+    - A settled question still pays some empirical science packs: more on a product whose trial costs more ore, up to a limit, and more on products of the process each map makes richest in science. The Coverage tab shows it per product, once a question there is settled. On new and existing maps.
+    - Research data is renamed Empirical science pack, with a new icon: a mint flask.
+    - New Notebook tab: one page of notes, shared by the force and kept with the map.
+    - The station's circuit signals are explained in a new tip, Station signals, instead of a table in the station window.
+    - The Findings tab shows when each finding was completed.
+    - A higher quality analysis station analyses faster, as a lab researches faster.
+    - Twelve new achievements.
+    - New Progress tab: samples analysed by science pack, empirical science packs made, packs per sample, questions settled, findings, products made with a dose and extra products from doses, over game time, with each finding marked.
+    - New tips: Sample kinds, Empirical science packs, Fluid hoppers, Temperature, Findings, Ripeness, Scrap samples and Quality additives.
+    - Many descriptions and tooltips are shorter and plainer.
+    - Tips and tricks entries have an icon in front of their title.
+    - First experiment, Samples, Dosing production, Residues and Fluid hoppers in Tips and tricks show a working scene.
+    - New startup setting, Empirical science packs in endless technologies, on by default. Off, no endless technology costs them.
+    - Trial recipes carry the test bench in their icon's corner, so a trial's signal no longer looks like its product's. The Experiments tab has the test bench as its icon.
+    - Mixtures tab: a fluid or biological member of the pair has a temperature or ripeness selector. The surface shows the results at the chosen bands, and each tested mixture names its bands.
+    - The fluid chiller is a cooling tower: Space Age's heating tower in blue, 3x3, with a cold glow while it burns a charge. Fluid passes through its middle from west to east and leaves north.
+    - A test bench takes a fluid ingredient in the middle of its top edge, as assembling machine 2 does. Hoppers dose from its other edge tiles.
+    - A discovered activation or premix is announced as "Recipe unlocked".
+    - On the Mixtures tab, hovering a Synergy shows its premix, or how many samples each of the four groups has against the number it needs.
+    - The pressure heater is painted crimson, and its icon carries tungsten carbide: it looked exactly like the fluid heater.
+    - Hoppers show a dose being handed out: an item hopper's hatch closes and opens, a fluid hopper's pump turns.
+    - Theory tab: predictions too uncertain to rank anything are left out of Where to look next, and families with no results on a process show a dash.
+  Bugfixes:
+    - Without the Quality mod, analysis stations never took a science pack, so no sample was ever analysed.
+    - With a lot of evidence, opening the Empirical Science screen or changing its sort froze the game for up to a minute, and judging findings caused a pause every ten seconds while doses were made. Each product's results are now indexed once and reused until new evidence arrives.
+    - Empirical science packs, samples and scrap samples weighed a tenth of a science pack: 10,000 fitted in a rocket. They now fit 1,000, as science packs do.
+    - Modules and beacons had no effect on test benches. Speed modules now speed up trials.
+    - On the Screening grid, rows for alternative recipes were one cell short, which shifted their values one column left.
+    - A premix could stay locked after its synergy was proven, until one more sample of the mixture itself was analysed. Samples of each additive alone and of the control now unlock it too.
+    - The Best composition tip's scene did not build: its example blueprint held a station layout that only fitted with Space Age.
+    - Premixes and activated residues with results were missing from the Empirical Science screen until their recipe was unlocked.
+    - The Mixtures tab plotted a heated or chilled mixture with the same doses at other temperatures, as if repeated, and compared it with its members at their usual temperature.
+    - A mixture with a heated, chilled or ripened member could never unlock its premix. It now counts against its members alone at the same band.
+    - Extra products of a dosed machine that makes something perishable could come out fresh when the machine had no ingredients left waiting. They now come out as fresh as the products they join.
+    - The Station port tip showed an error instead of its scene.
+    - The Empirical Science page of Tips and tricks showed an unknown key instead of its text.
+---------------------------------------------------------------------------------------------------
+Version: 0.71.0
+Date: 2026-10-06
+  Changes:
+    - New Fluid hopper, built like a pump. Fluids go into it by pipe at either end, and a line can run through several; it doses the machines along its sides. Hoppers take items only, and pipes no longer join them. A dose of an item and a fluid takes one of each.
+    - Hoppers in a save lose the fluid they held. Place fluid hoppers for fluid doses.
+    - Hoppers look like a teal logistic chest with its hatch open.
+    - The retired exhaust hopper is removed: any still in a save from before 0.65 disappears with its residues.
+    - The main menu shows one scene: a dosed factory built into the base game's lab scene. The three earlier scenes are gone.
+    - New Fluid chiller (Chilling): chills liquid premixes that pass through it, burning cold charges made from cold fluoroketone. Liquid premixes no longer have chilled versions or chilling recipes; water, oils, lubricant and sulfuric acid keep theirs.
+    - Liquid premixes in pipes and tanks of a save lose their chilled versions: chilled premix in them is lost.
+  Bugfixes:
+    - Hopper limit bars were cleared whenever the mod updated.
+---------------------------------------------------------------------------------------------------
+Version: 0.70.0
+Date: 2026-10-05
+  Changes:
+    - On new maps, side effects depend on what a machine makes: an additive that speeds up metalwork may slow electronics. Existing maps are unchanged.
+    - On new maps with Space Age, wood can be dosed once Tree seeding is researched. Every target still has an early additive that works.
+    - Char is renamed Pulp.
+    - The Theory tab can fit speed, cleanliness and efficiency as well as yield.
+    - Research costs follow: Mixtures, Theory and Quality additives 102 units; Thermal studies 113.
+    - Hoppers have a teal frame as well as a teal face, so they no longer look like steel chests.
+    - The Screening grid's To settle column is now Pays?: Pays, Does not pay or Break-even once the samples are clear, or how many more samples it needs. The control row says Balanced.
+    - The Target list shows the targets with samples, each with its count; tick All targets for the rest.
+    - The Target row hides on tabs that do not depend on the target.
+    - New Coverage tab: per target, samples, additives tested, results that pay, and the families tried.
+    - Mixtures and Theory tabs appear in the panel when researched.
+    - Each planet has its own finding bars, shown under its name in the Findings tab.
+    - Slurries (a solid and a fluid premixed) leave their solid's residue, in proportion to the solid they carry.
+    - On new maps, a fluid's best temperature lifts its effect at most three times.
+    - New map setting, Science seed: the same science seed, world strength and mod version give the same hidden world on any map. The screen shows it, to share.
+    - The pressure heater can be built on any planet. It burns pressure charges, made from tungsten carbide and solid fuel.
+    - Hopper slots can be filtered, as a cargo wagon's, so one hopper can hold two additives without one crowding out the other.
+    - Hovering a hopper always selects the hopper, in the map editor too. Opening it shows the fluid it holds and at what temperature.
+    - The analysis station's circuit corner is smaller.
+    - Samples look like a report. The analysis station and the test bench's icon take the test bench's teal.
+  Bugfixes:
+    - The Theory tab could show no numbers when two results were exactly equal.
+    - A hopper below a machine lost the top of its rim under the pipe joint.
+    - With a tab hidden, the tab strip could show the wrong tab names.
+    - The Dose-response table's rows slid one column out of line under its headers.
+---------------------------------------------------------------------------------------------------
+Version: 0.69.0
+Date: 2026-10-04
+  Features:
+    - Finishing the Findings adds a report to the Findings tab: how much is left to find (counts only), your findings against their true effect, and tests you dropped that are worth another look.
+---------------------------------------------------------------------------------------------------
+Version: 0.68.0
+Date: 2026-10-04
+  Changes:
+    - The Findings tab lists every finding bar.
+    - Answer key: rank a target's additives by any effect at their own best dose, see the best pairs, and a Findings tab with this map's bars, quotas and the major findings on offer.
+    - Activated catalysts and solid premixes leave residues too: one per solid in them. Biological additives leave spoilage. Fluids and quality additives leave nothing.
+    - The Dosing panel says what a dose will leave on the output.
+    - Residues no longer recycle back into the item they were made from.
+    - Wording and layout throughout follow the base game's style; long tables scroll.
+  Bugfixes:
+    - The circuit tips' scenes failed outside test runs.
+    - A machine switched to another recipe kept its dose's speed and power effects.
+    - A mixture of three families could block forever on lack of room for its residues; residues of two additives could be lost.
+    - The Findings tab showed the major finding's bar on planet rows.
+    - Library blueprints lost their doses; hopper reports ignored chilled fluids.
+---------------------------------------------------------------------------------------------------
+Version: 0.67.0
+Date: 2026-10-04
+  Changes:
+    - Results read the same everywhere: a proven gain shows how much it is at least (green), a proven harm how much it is at most (orange), and an unclear result its average so far (grey, ~).
+    - The Data column is now To settle: about how many more samples until the best dose clearly pays or clearly does not. The control row says how many more controls you need.
+    - Fit reads good, fair or poor.
+  Features:
+    - Alt mode shows each bench's and dosed machine's dose, greyed when it is not supplied.
+    - A message when a finding is complete.
+    - Example blueprints shortcut: dose by signal, a dose sweep, and the best composition sent to a machine.
+    - Tips with live examples: doses in alt mode, doses from signals, dose sweeps, the station port.
+  Bugfixes:
+    - Cleanliness findings counted a dirtier dose as a gain.
+---------------------------------------------------------------------------------------------------
+Version: 0.66.0
+Date: 2026-10-04
+  Features:
+    - Findings: the ending. A finding is an effect you proved and put into production. Complete each reached planet's quota and the major findings to finish. The game goes on.
+    - Findings tab on the Empirical Science screen.
+    - Achievement: Peer reviewed.
+  Changes:
+    - Circuit dosing 1-3 is now Lab circuits 1-3: levels 2 and 3 add station readouts, not dosing.
+---------------------------------------------------------------------------------------------------
+Version: 0.65.0
+Date: 2026-10-04
+  Changes:
+    - Residues now leave a dosed machine with its products, through its output inserter, as spoilage does. Hoppers only supply.
+    - When a machine has no room for its residues, its dose waits and the machine shows a warning.
+    - The exhaust hopper is removed. Exhaust hoppers in a save become steel chests holding their contents.
+---------------------------------------------------------------------------------------------------
+Version: 0.64.0
+Date: 2026-10-04
+  Features:
+    - Six new targets: tungsten plate and metallurgic science (Vulcanus), supercapacitor and tesla ammo (Fulgora), fusion power cell and foundation (Aquilo).
+  Changes:
+    - Activating a catalyst takes 12 spent residues instead of 10.
+  Graphics:
+    - Hoppers: a steel chest with a painted front, a pipe flange on the machine it doses, and pipe joints drawn beneath the hopper when piped.
+---------------------------------------------------------------------------------------------------
+Version: 0.63.0
+Date: 2026-10-04
+  Features:
+    - Space science and promethium science packs are targets. Their trials, like the packs, can only be made in space.
+---------------------------------------------------------------------------------------------------
+Version: 0.62.0
+Date: 2026-10-03
+  Features:
+    - Gleba: living additives (yumako mash, jelly, nutrients, pentapod eggs, bioflux, spoilage). Their effect depends on how far they have spoiled when dosed; results are kept per ripeness band. A pentapod egg left too long in a hopper hatches.
+    - Screening grid: scrolls, sorts and filters.
+    - Answer key: family, shape, best temperature or ripeness.
+  Changes:
+    - Text rewritten throughout to read like the base game.
+---------------------------------------------------------------------------------------------------
+Version: 0.61.0
+Date: 2026-10-03
+  Features:
+    - Vulcanus: the pressure heater heats fluid additives and liquid premixes to 500 degrees, only under Vulcanus's pressure.
+    - Aquilo: chilled twins of every fluid additive and liquid premix, down to -150 degrees, made with cold fluoroketone; dosed as their fluid.
+    - New maps: some best temperatures lie beyond what Nauvis's heaters reach; the temperature view shows a curve still rising toward them.
+---------------------------------------------------------------------------------------------------
+Version: 0.60.0
+Date: 2026-10-03
+  Features:
+    - Fulgora: recycling scrap now and then yields a scrap sample, one random result on a scrap product, analysed by any station with whatever science pack it holds (better packs reach rarer results). Spoils in minutes. Scrap forensics 1 and 2 widen what it can tell.
+    - Quality science packs analyse more samples at a station, as they last longer in labs.
+  Bugfixes:
+    - The station window counted only normal-quality packs.
+---------------------------------------------------------------------------------------------------
+Version: 0.59.1
+Date: 2026-10-03
+  Bugfixes:
+    - Screening grid: alternative recipe rows lined up with the columns again (0.59.0 changed the columns but not their rows).
+---------------------------------------------------------------------------------------------------
+Version: 0.59.0
+Date: 2026-10-03
+  Features:
+    - Cliff model in Dose-response: Automatic recognises a gain that collapses past a dose and gives the best dose before it.
+    - Theory tab: each family's measured dose-response shape per process. A tip explains families.
+    - The station window shows which page its port serves; samples list what they measured; the screen names the map's world strength.
+  Changes:
+    - Screening grid: freshness only on targets that spoil; the measurements that wait for Analysis precision share one column until then.
+    - New maps: members of a family are closer to each other, so one additive leads fewer targets.
+    - World strength offers standard and harsh; gentle is withdrawn until it is redesigned.
+---------------------------------------------------------------------------------------------------
+Version: 0.58.0
+Date: 2026-10-03
+  Features:
+    - New maps: an additive family responds alike on targets of the same process (its dose-response shape is a family trait), and a new shape, the cliff: the gain holds, then collapses past a dose. Existing maps are unchanged.
+---------------------------------------------------------------------------------------------------
+Version: 0.57.0
+Date: 2026-10-03
+  Changes:
+    - World strength reworked: harsh makes experiments dearer (bigger trial batches, noisier trials, more packs per sample) and finds rarer, larger and harder to hit; gentle the reverse. Fixed when a map is created.
+---------------------------------------------------------------------------------------------------
+Version: 0.56.0
+Date: 2026-10-03
+  Features:
+    - Startup setting "World strength": gentle (larger effects, clearer trials), standard, harsh (smaller effects, noisier trials). The map's winners stay the same.
+---------------------------------------------------------------------------------------------------
+Version: 0.55.0
+Date: 2026-10-03
+  Features:
+    - Other mods can register their products as targets, with a process mix.
+    - Startup setting "Derive targets" (off by default): science packs that are not targets become targets, their process mix derived from their recipe.
+---------------------------------------------------------------------------------------------------
+Version: 0.54.0
+Date: 2026-10-03
+  Features:
+    - Temperature view: on the dose-response tab of a liquid premix, "All temperatures" plots each band at the best dose and fits the best temperature, with how sure it is.
+---------------------------------------------------------------------------------------------------
+Version: 0.53.0
+Date: 2026-10-03
+  Features:
+    - The Theory tab (after the Theory technology): a model fitted to your own evidence says how each additive family leans toward metalwork, chemistry and electronics, and which untested additive and target look most promising, with how sure it can be.
+---------------------------------------------------------------------------------------------------
+Version: 0.52.0
+Date: 2026-10-03
+  Features:
+    - Freshness: an additive can make products come out fresher than the ingredients they inherit their spoilage from. Measured on benches with stale (not spoiled) ingredients; a column and a view on the screen.
+    - Gleba targets: bioflux, nutrients, pentapod eggs and agricultural science.
+  Bugfixes:
+    - Extra products from a yield gain no longer come out fresh when their ingredients were stale.
+---------------------------------------------------------------------------------------------------
+Version: 0.51.0
+Date: 2026-10-02
+  Bugfixes:
+    - Ash and char are made in an assembler. As furnace recipes, a furnace fed coal with its ore smelted the coal into ash once carbon's activation was found, and stopped making plates.
+---------------------------------------------------------------------------------------------------
+Version: 0.50.0
+Date: 2026-10-02
+  Features:
+    - Iron plates, copper plates and stone bricks are targets: test them on a bench, dose them in furnaces. With a quality agent, a furnace starts quality from raw materials, before the recycler.
+    - The full cost view prices by the planet shown: no pollution price where there is no pollution, and solar power by the planet's sunlight.
+---------------------------------------------------------------------------------------------------
+Version: 0.49.1
+Date: 2026-10-02
+  Bugfixes:
+    - Burner machines (stone and steel furnaces) no longer feed or draw electricity through their additive's power effect.
+    - Additives of any quality in a hopper now dose a machine (only normal quality counted before).
+---------------------------------------------------------------------------------------------------
+Version: 0.49.0
+Date: 2026-10-02
+  Features:
+    - Analysis stations take a circuit input: a recipe signal chooses the target their port reports, es-page chooses the page.
+    - Station port pages: sample counts, lower bounds, best doses, a single dose's figures, and the best tested composition as doses a machine can take (Circuit dosing 2 and 3).
+    - Hoppers can report to the circuit: machines dosed or short of an additive, units missing for their next batch, residue full.
+    - Trials can be chosen by circuit with the bench's "Set recipe", and show their target's process mix.
+  Changes:
+    - Machines in circuit mode read their doses in one pass.
+---------------------------------------------------------------------------------------------------
+Version: 0.48.1
+Date: 2026-10-02
+  Changes:
+    - Dose panel: right-click a slot to remove its additive. Removing a row moves the rows below it up.
+  Bugfixes:
+    - Machines whose additive saves power no longer flash a no-power icon.
+---------------------------------------------------------------------------------------------------
+Version: 0.48.0
+Date: 2026-10-02
+  Changes:
+    - Each additive has its own hidden quirks on each target, so no single additive leads most of the tech tree. New maps only.
+---------------------------------------------------------------------------------------------------
+Version: 0.47.0
+Date: 2026-10-02
+  Changes:
+    - Additive families are specialists: a family strong on one kind of process is weak on another, so no family leads everywhere. New maps only.
+---------------------------------------------------------------------------------------------------
+Version: 0.46.1
+Date: 2026-10-02
+  Bugfixes:
+    - Dosed machines no longer show a no-power icon on networks fed by accumulators or an electric energy interface.
+---------------------------------------------------------------------------------------------------
+Version: 0.46.0
+Date: 2026-10-02
+  Features:
+    - /es-answer-key shows the map's hidden world: what every additive does to every target. It spoils the game, so it asks twice; in multiplayer only admins can open it.
+---------------------------------------------------------------------------------------------------
+Version: 0.45.0
+Date: 2026-10-02
+  Features:
+    - Dose-response has a Full cost view: what each dose saves per product once machine time, power and pollution are counted, at early or late prices or your own (sliders).
+---------------------------------------------------------------------------------------------------
+Version: 0.44.0
+Date: 2026-10-02
+  Features:
+    - Additives also change how much power a machine uses. Samples measure it once Analysis precision 1 is researched (an Efficiency column and view; the station port outputs E), and dosed machines draw more or less power for real.
+---------------------------------------------------------------------------------------------------
+Version: 0.43.0
+Date: 2026-10-02
+  Balancing:
+    - Activated catalysts, premixes and catalyst premixes work better on complex recipes and worse on simple ones.
+---------------------------------------------------------------------------------------------------
+Version: 0.42.0
+Date: 2026-10-02
+  Changes:
+    - Activated catalysts can be premixed again: the top rung, discovered like other premixes.
+---------------------------------------------------------------------------------------------------
+Version: 0.41.0
+Date: 2026-10-02
+  Balancing:
+    - Premixes are concentrates: their recipes take five times the ingredients.
+  Changes:
+    - Residues appear in the additive picker once some has been made, and show in production statistics.
+  Bugfixes:
+    - Activated catalysts were costed as almost free when judging whether a dose pays.
+---------------------------------------------------------------------------------------------------
+Version: 0.40.0
+Date: 2026-10-02
+  Changes:
+    - Each residue can be made directly from its family's additive once its activation is discovered.
+    - Activated catalysts are no longer used in premixes. In mixtures, residues and activated catalysts behave as their family.
+---------------------------------------------------------------------------------------------------
+Version: 0.39.0
+Date: 2026-10-02
+  Changes:
+    - Every solid additive now leaves its family's residue: ash, char, gravel, metal dust, sulfur residue or polymer scrap. Fluids, premixes, activated catalysts and quality additives leave none.
+    - Residues are no longer smelted back into additives. Each residue can be activated into a catalyst once a station shows it helps a recipe; activation from the raw additive is gone.
+    - Spent stone and spent stone brick are now gravel; activated brick is now activated silica.
+---------------------------------------------------------------------------------------------------
+Version: 0.38.0
+Date: 2026-10-02
+  Changes:
+    - Shorter, plainer text in every window, tooltip and description.
+    - Quality additives make research data while their upgrade rate is still uncertain, and the Dose-response tab shows their rate at each dose.
+---------------------------------------------------------------------------------------------------
+Version: 0.37.2
+Date: 2026-10-02
+  Changes:
+    - "Routes" are called alternative recipes everywhere.
+---------------------------------------------------------------------------------------------------
+Version: 0.37.1
+Date: 2026-10-02
+  Bugfixes:
+    - A machine slowed by an additive could cancel crafts and lose their ingredients. Fixed.
+    - A machine with a negative yield fed by an inserter could be charged for its loss over and over, starving it. Fixed.
+    - Quality agents now upgrade products even when an inserter empties the machine right away.
+---------------------------------------------------------------------------------------------------
+Version: 0.37.0
+Date: 2026-10-02
+  Features:
+    - Quality additives work in production: a machine dosed with a quality agent makes some of its products a quality tier higher. Its dose panel says so; sort its output downstream.
+    - The station's circuit port outputs Q: the best upgrade rate found among quality agents on its target.
+---------------------------------------------------------------------------------------------------
+Version: 0.36.0
+Date: 2026-10-02
+  Features:
+    - Quality additives (with the Quality mod): rare materials (uranium-235; with Space Age also lithium, tungsten carbide and holmium plates) can make products come out a quality tier higher. Test them on benches: samples count upgraded products, and the Screening tab has a Quality column. Opens with the Quality additives technology.
+---------------------------------------------------------------------------------------------------
+Version: 0.35.0
+Date: 2026-10-02
+  Balancing:
+    - Trials keep half their batch (was 80%) and take longer: a test bench no longer makes products faster than an assembling machine, and a study is a real investment.
+    - Productivity research for each target costs more science packs, in line with the higher cost of studies.
+---------------------------------------------------------------------------------------------------
+Version: 0.34.0
+Date: 2026-10-01
+  Changes:
+    - Technologies renamed in vanilla style: Experimentation, Alternative recipes, Additive mixing, Fluid heating, Analysis precision, Analysis productivity, Circuit dosing, and "<item> productivity". Shorter descriptions.
+    - Science packs no longer have alternative recipes; alternative recipes have their own section on the Screening tab.
+    - Dose-response picks its model automatically by default: a straight line unless a curve fits clearly better.
+    - Dose panel: the batch size shows next to the target, one empty additive slot at a time, "Hoppers: N".
+---------------------------------------------------------------------------------------------------
+Version: 0.33.2
+Date: 2026-10-01
+  Changes:
+    - Messages about locked tools name the technology; the stage technologies have their own icons.
+    - Before Precision instruments 1, route rows also show speed and cleanliness as not measured yet.
+---------------------------------------------------------------------------------------------------
+Version: 0.33.1
+Date: 2026-10-01
+  Graphics:
+    - The test bench's deck is a light steel instead of tan: a cleaner laboratory look.
+---------------------------------------------------------------------------------------------------
+Version: 0.33.0
+Date: 2026-10-01
+  Features:
+    - Exhaust hopper: takes no additives; spent additive from every machine it touches goes into it. Feed a mixture from a hopper per additive and empty one exhaust.
+  Changes:
+    - Without an exhaust, spent additive goes back into the hopper it came from.
+---------------------------------------------------------------------------------------------------
+Version: 0.32.2
+Date: 2026-10-01
+  Changes:
+    - The dose picker offers only additives you can make (or have made); the Empirical Science screen lists only targets whose trial you have unlocked, or that have evidence.
+    - A hopper with no room left for spent additive shows a warning icon, and the machine's dose panel says why it is not dosed.
+---------------------------------------------------------------------------------------------------
+Version: 0.32.1
+Date: 2026-10-01
+  Changes:
+    - Clearer first hour: corrected building descriptions, a test bench without a trial says so, the dose panel shows the batch a dose is for, and column headers explain n, CI, p, Data and Family on hover.
+---------------------------------------------------------------------------------------------------
+Version: 0.32.0
+Date: 2026-10-01
+  Features:
+    - Staged reveal: the Empirical method opens the whole loop with one additive per machine, measuring yield. The rest comes with research paid in research data: Process routes (route trials and adoption), Mixtures (dose rows 2 and 3, the Mixtures tab), Thermal studies (fluid heaters and temperature bands). Precision instruments 1 now also measures speed and pollution, and Circuit instrumentation 1 opens circuit mode.
+    - A machine set up beyond what is researched (from a blueprint, say) says what it waits for.
+  Changes:
+    - Saves from earlier versions keep every tool they had.
+---------------------------------------------------------------------------------------------------
+Version: 0.31.0
+Date: 2026-10-01
+  Features:
+    - Mastery research: for every target (gears, circuits, science packs...), an infinite technology giving +5% productivity per level on its recipe and its routes, paid in research data and its science packs. It opens once your evidence on that target is real: an additive clearly worth dosing there, or 125 research data from its samples. Science pack mastery stops at 5 levels. With Space Age, steel, low density structures, processing units and plastic keep their own productivity research.
+    - The Empirical Science screen's footer says where each target's mastery stands; a message announces when one opens; a tip explains it.
+---------------------------------------------------------------------------------------------------
+Version: 0.30.2
+Date: 2026-10-01
+  Changes:
+    - Space Age: processing unit and plastic productivity research also need research data (both are targets now).
+    - The burner fluid heater unlocks with the Empirical method (it unlocked with steam power, before anything could use it).
+---------------------------------------------------------------------------------------------------
+Version: 0.30.1
+Date: 2026-10-01
+  Graphics:
+    - Fluid heaters have their own look: the boiler's and heat exchanger's body in the test bench's teal.
+---------------------------------------------------------------------------------------------------
+Version: 0.30.0
+Date: 2026-10-01
+  Features:
+    - Fluid heaters: a burner one (to 60 °C, with the boiler) and a heat-pipe one (to 90 °C, with the heat exchanger). Any fluid in, the same fluid out, hotter.
+    - Every fluid additive (water, oils, lubricant, acid, liquid premixes) works best at a hidden temperature of its own. At its usual temperature nothing changes; heated, it may do better or worse. Evidence is kept per temperature band, and Dose-response has a temperature selector for any fluid.
+  Changes:
+    - Liquid premixes are heated with fluid heaters (the steam heating recipe is gone).
+---------------------------------------------------------------------------------------------------
+Version: 0.29.0
+Date: 2026-10-01
+  Features:
+    - Liquid premix evidence is kept per 15-degree temperature band; the Dose-response tab has a temperature selector for them, and Screening shows each one's best band.
+    - Planet conditions: each additive also responds to gravity, pressure and magnetic field in its own way, on top of its family's, so the best additive differs more often from planet to planet.
+  Graphics:
+    - The thumbnail no longer shows a grey halo on light backgrounds.
+---------------------------------------------------------------------------------------------------
+Version: 0.28.3
+Date: 2026-10-01
+  Graphics:
+    - Mod thumbnail.
+---------------------------------------------------------------------------------------------------
+Version: 0.28.2
+Date: 2026-10-01
+  Optimizations:
+    - Test benches are checked when their trial is due to finish, not every tick: a large research array costs a third as much.
+---------------------------------------------------------------------------------------------------
+Version: 0.28.1
+Date: 2026-10-01
+  Changes:
+    - The mod's test interface (which reads the hidden world) exists only when one of its test mods is loaded.
+---------------------------------------------------------------------------------------------------
+Version: 0.28.0
+Date: 2026-10-01
+  Features:
+    - Spoilage: a trial whose spoilable inputs are half spoiled or more fails. Its batch is consumed and its sample says so; stations count it as a failed run and spend no pack on it.
+  Changes:
+    - A station's window lists its failed runs.
+---------------------------------------------------------------------------------------------------
+Version: 0.27.0
+Date: 2026-10-01
+  Features:
+    - Liquid premixes: emulsions and slurries are now fluids, dosed by pipe through a hopper. Each works best at a hidden temperature of its own: made cool, heated with steam to hot, and any blend between. Samples record the temperature of what their trial took.
+  Changes:
+    - Emulsions and slurries no longer have volatile twins (temperature takes that place). Unlocked ones stay unlocked.
+---------------------------------------------------------------------------------------------------
+Version: 0.26.0
+Date: 2026-10-01
+  Features:
+    - Planet conditions: gravity, pressure and magnetic field change what additives do, lawfully (the same family behaves alike under the same physics). Nauvis is unchanged.
+    - Evidence is kept per planet: samples count for the planet their trial ran on, wherever they are analysed. The Empirical Science screen has a planet selector; a station's port reads its own planet's evidence.
+    - Research data questions are per planet too: a new planet is new questions.
+  Changes:
+    - Existing evidence and research data become Nauvis's.
+---------------------------------------------------------------------------------------------------
+Version: 0.25.0
+Date: 2026-10-01
+  Features:
+    - New targets: processing units, plastic, batteries, electric engines and flying robot frames; with Space Age, tungsten carbide, superconductors, carbon fibre and lithium plates (their samples cost their planet's science pack).
+    - The test bench has a fluid input (top-left edge) for trials that need one.
+  Changes:
+    - Analysis stations have 36 slots (10 for science packs: one per tier).
+    - Space Age and Quality are listed as optional dependencies (load order).
+  Bugfixes:
+    - Adding targets no longer risks redrawing an existing map's hidden world.
+---------------------------------------------------------------------------------------------------
+Version: 0.24.1
+Date: 2026-09-30
+  Features:
+    - Route trials earn research data: a route is a question of its own (is it worth adopting over the vanilla recipe?), shown in the Data column.
+  Bugfixes:
+    - A sample with an empty route tag was filed under a bogus route key.
+---------------------------------------------------------------------------------------------------
+Version: 0.24.0
+Date: 2026-09-30
+  Features:
+    - Tips and tricks: an Empirical Science section that unlocks as you go (first experiment, samples and stations, reading the evidence, screening, dosing production).
+    - Analysis stations raise a map alert when they wait for science packs or fill up with samples.
+    - The Empirical Science screen and a new station's window say how to get started while there is no evidence yet.
+  Changes:
+    - The Empirical method technology describes the whole loop.
+---------------------------------------------------------------------------------------------------
+Version: 0.23.0
+Date: 2026-09-30
+  Features:
+    - Space Age: productivity research for recipes you can study here (steel plate, low density structure) also needs research data.
+    - Map setting (startup): research data in mainline technologies, from a chosen science pack on. Off by default.
+  Bugfixes:
+    - The biolab accepts research data.
+---------------------------------------------------------------------------------------------------
+Version: 0.22.1
+Date: 2026-09-30
+  Graphics:
+    - Research data has its own icon (a teal flask with a magnifier), distinct from blue science.
+  Changes:
+    - A station's window lists its counts one per row.
+---------------------------------------------------------------------------------------------------
+Version: 0.22.0
+Date: 2026-09-30
+  Features:
+    - Research data: analysis stations turn what samples teach into research data, in two slots of their own. A sample on a question that is still open is worth almost a full unit; one on a settled question, a tenth. Labs use it.
+    - The Screening grid has a Data column: what the next sample of each additive is worth, and why (open, closing or settled).
+    - New technologies: Precision instruments (less trial noise), Station throughput (more samples per science pack), Circuit instrumentation (the port also outputs O and L).
+  Changes:
+    - Analysis stations have 32 slots (2 for research data).
+---------------------------------------------------------------------------------------------------
+Version: 0.21.0
+Date: 2026-09-30
+  Features:
+    - Empirical Science screen: all your evidence in one place, from the shortcut bar, Ctrl+Shift+E or a station's window. Every station feeds it, so a study scales across any number of stations, and removing a station loses nothing.
+    - A station's window shows its own counts and packs, and which target its circuit port outputs.
+    - The circuit port also outputs A, the samples this station analysed (N now counts every station's).
+  Changes:
+    - Clearing evidence is per target, from the screen, and asks for a second click.
+    - Existing stations' evidence is merged into the shared evidence; each station keeps its own history too.
+    - A station's port can read that station's evidence only (a switch in its window), for a rig that must see its own experiment alone.
+---------------------------------------------------------------------------------------------------
+Version: 0.20.1
+Date: 2026-09-30
+  Balancing:
+    - Additive yield counts toward a recipe's productivity cap: it fills the gap up to the cap and no further (with recyclers, anything past the cap would make items from nothing). The dose panel says when a machine is near the cap.
+---------------------------------------------------------------------------------------------------
+Version: 0.20.0
+Date: 2026-09-30
+  Balancing:
+    - Early targets pay off: trial batches hold more product (gears 30, circuits 24, steel 12, red science 20, green science 9, engines 7, red circuits 6), so a dose per batch spreads over more products.
+    - Trials return 80% of their batch (was 30%): experiments cost far less material.
+    - Spent additives smelt back 2 to 1 (was 4 to 1).
+    - Trials are quicker for their size (a larger batch does not take proportionally longer).
+---------------------------------------------------------------------------------------------------
+Version: 0.19.4
+Date: 2026-09-30
+  Bugfixes:
+    - A dosed machine with a full output no longer spills its extra products on the ground; they go in when there is room.
+---------------------------------------------------------------------------------------------------
+Version: 0.19.3
+Date: 2026-09-30
+  Features:
+    - The station's circuit port also outputs S and C: the speed and cleanliness changes of its best result.
+  Changes:
+    - Stations accept science packs of any quality (lowest quality spent first).
+  Bugfixes:
+    - Wires on a station's circuit port are kept in blueprints and copy-paste.
+---------------------------------------------------------------------------------------------------
+Version: 0.19.2
+Date: 2026-09-30
+  Graphics:
+    - The hopper has its own look: an open funnel on top and a teal band. The chute into each machine is drawn beneath both buildings, so it shows only in the gap, as a pipe running from one into the other.
+---------------------------------------------------------------------------------------------------
+Version: 0.19.1
+Date: 2026-09-30
+  Optimizations:
+    - Dosed machines remember which hoppers touch them instead of searching every time.
+---------------------------------------------------------------------------------------------------
+Version: 0.19.0
+Date: 2026-09-30
+  Features:
+    - Premixes are now per pair of additives (from different families), not per pair of families: the pair a station found synergistic is the one that unlocks, activated catalysts included. Two solids make a blend in an assembler, a solid and a fluid a slurry in a chemical plant, two fluids an emulsion (with sulfur).
+    - Activated catalysts can also be made from the raw additive (dearer than from its spent residue); both recipes unlock together.
+  Changes:
+    - Premixes from 0.18.0 are removed; doses and presets that used them are cleared.
+---------------------------------------------------------------------------------------------------
+Version: 0.18.0
+Date: 2026-09-30
+  Features:
+    - Premixes: 28, one per pair of chemistry families. A station that shows a clear synergy between two families (a mixture of one member of each, against each alone and the control) unlocks their premix, made in a chemical plant. Premixes are potent at low doses; on some maps a premix is volatile and spoils.
+  Changes:
+    - Refining a residue is now called activating it (activated carbon, lignin, slag, brick, copper); it unlocks on a clear gain from the residue on any target a station tested.
+  Bugfixes:
+    - Trial noise could be biased for some test benches (all shared one random stream); each bench now has its own.
+---------------------------------------------------------------------------------------------------
+Version: 0.17.0
+Date: 2026-09-30
+  Features:
+    - Additives also change how fast a recipe crafts and how much it pollutes, hidden per map like yield. Strong yield often comes at a cost in speed or cleanliness; a few additives mainly speed things up.
+    - Every sample measures yield, speed and pollution (pollution is the hardest to read).
+    - Station: the Screening tab is a grid of yield, speed and cleanliness per additive (at its best yield dose), green for a clear gain, vermillion for a clear loss. Dose-response and Mixtures have an effect selector.
+    - Dosed machines craft at their composition's hidden speed and pollute accordingly (shown in the pollution statistics).
+---------------------------------------------------------------------------------------------------
+Version: 0.16.2
+Date: 2026-09-30
+  Changes:
+    - Synergies between additives, and how much a mixture can add, scale with the target's responsiveness like every other effect.
+---------------------------------------------------------------------------------------------------
+Version: 0.16.1
+Date: 2026-09-30
+  Changes:
+    - Trial noise lowered (12% of a batch, was 20%): modest effects can be confirmed at about the same cost in packs.
+---------------------------------------------------------------------------------------------------
+Version: 0.16.0
+Date: 2026-09-30
+  Changes:
+    - Targets differ in how strongly they respond to additives: recipes with more ingredient kinds and longer crafts respond more (new maps; existing maps keep their responses).
+    - The additive every target is guaranteed to have is modest (+5 to +15% before responsiveness), so big finds are rare.
+---------------------------------------------------------------------------------------------------
+Version: 0.15.1
+Date: 2026-09-30
+  Changes:
+    - A dose is units per batch of products in production too, exactly as on a test bench. Dosing cheap products is a trade-off (more output per machine, not always less ore); on costly products it pays almost everywhere.
+---------------------------------------------------------------------------------------------------
+Version: 0.15.0
+Date: 2026-09-30
+  Changes:
+    - Production spends a dose per 2 batches (was 5): additives weigh in logistics; most findings stay profitable.
+    - Residues (spent additives) are degraded: most harm the recipes they are dosed into; a few keep a faint gain, the hint of a discovery chain. Refining unlocks only on a clear gain.
+    - Dose panel: additives are picked from an icon grid in slot buttons; each dose shows its maximum; in circuit mode the rows show the doses the wire sends.
+    - Hoppers draw a chute into each machine they serve.
+  Bugfixes:
+    - A hopper filled by an inserter left no room for spent additive, which was lost: its last two slots (past the bar) are now kept for it.
+---------------------------------------------------------------------------------------------------
+Version: 0.14.1
+Date: 2026-09-30
+  Bugfixes:
+    - A test bench's dose panel said its recipe was not an experiment target; it now says what the bench tests.
+  Changes:
+    - Trial recipes are named "<target> trial" (the dose comes from the hoppers); the dose panel's help text wraps.
+---------------------------------------------------------------------------------------------------
+Version: 0.14.0
+Date: 2026-09-30
+  Features:
+    - Dosing at the machine. Every additive is dosed at the machine that makes the item: a dose panel on each assembler's and furnace's own window (additive rows, presets, or circuit signals), supplied by hoppers.
+    - Hopper: holds additives (items by inserter, fluids by pipe) for every machine it touches, like a beacon. Spent additives come back into it.
+    - One test bench: a trial recipe per target and route, dosed from hoppers like production. A trial whose dose is missing runs as a control, and its sample says so.
+    - Presets: the station saves compositions (Dose-response and Mixtures tabs) that every dose panel offers; a Presets tab lists them.
+    - Dose settings travel by copy-paste and blueprints.
+    - Discovery chains unlock by evidence: a station showing a residue's effect (p < 0.05) unlocks refining it.
+  Changes:
+    - Removed: adoption of compositions, direct recipes ("<target> with <additive> xN"), the formula catalogue and volatile formulas, the formulation plant, the advanced test bench and per-dose trial recipes. Machines that ran removed recipes lose them on loading.
+---------------------------------------------------------------------------------------------------
+Version: 0.13.0
+Date: 2026-09-30
+  Features:
+    - Additives on alternate routes. Each route is a target of its own ("Iron gear wheel · Cast gears"): additives act on it through the same hidden traits, but differently from the vanilla recipe.
+    - Advanced test benches can test additives on a route; stations list a route once it is adopted or has data, and route trials from simple benches count as its control.
+    - A composition adopted on a route is a formula: "<route> (Formula k)" recipes, available once the route is adopted.
+---------------------------------------------------------------------------------------------------
+Version: 0.12.3
+Date: 2026-09-30
+  Changes:
+    - Station: each tab adopts what it shows (Screening: routes, Dose-response: an additive at a dose, Mixtures: a mixture); the footer now says what the target runs (direct recipe or formula, routes, other usable formulas).
+    - Catalogue: an "On <target>" column names the recipe to choose in an assembler to use each formula for the station's target.
+---------------------------------------------------------------------------------------------------
+Version: 0.12.2
+Date: 2026-09-30
+  Bugfixes:
+    - Fixed a crash opening a station that had analysed a mixture whose additives were never tested alone (for example a formula loaded into an advanced bench).
+---------------------------------------------------------------------------------------------------
+Version: 0.12.1
+Date: 2026-09-29
+  Features:
+    - Advanced test bench: "Load formula" sets its doses to a formula's composition, to test the formula on another target.
+    - Catalogue tab: "Tested on" shows how many samples of each formula's composition were analysed per target.
+---------------------------------------------------------------------------------------------------
+Version: 0.12.0
+Date: 2026-09-29
+  Features:
+    - Volatile formulas: on every map some chemistry families are unstable. A composition containing one makes a formula that spoils within minutes (numbers 9 to 16), so it must be made near where it is used. Strong families are more often unstable. Needs spoiling (Space Age); without it every formula keeps.
+---------------------------------------------------------------------------------------------------
+Version: 0.11.0
+Date: 2026-09-29
+  Features:
+    - Formula catalogue. Compositions that are not a direct recipe are bound to numbered formulas; every target can use any formula ("<target> (Formula k)"), and the effect depends on the target.
+    - Several compositions can run side by side. A number is never rebound while its formula is in circulation, so formula already made keeps its composition.
+    - Station Catalogue tab: formulas, their compositions, where they were adopted, stock in circulation, and retiring.
+    - Formulation plants choose a formula and a quality instead of a target.
+  Changes:
+    - Formulations from earlier versions become stable formula numbers; old per-target formulations are hidden and used up.
+---------------------------------------------------------------------------------------------------
+Version: 0.10.5
+Date: 2026-09-29
+  Bugfixes:
+    - Products added or removed by an adopted effect now appear in the production statistics, so the effect can be read from the production graph.
+---------------------------------------------------------------------------------------------------
+Version: 0.10.4
+Date: 2026-09-29
+  Changes:
+    - The Screening tab says how many mixture samples were tested and points to the Mixtures tab.
+    - Mixtures of three or more additives are labelled as having no pairwise estimate.
+---------------------------------------------------------------------------------------------------
+Version: 0.10.3
+Date: 2026-09-29
+  Features:
+    - First draft. Test benches run destructive trials of recipes with additives; each trial emits a sample recording its yield.
+    - Analysis stations turn samples plus science packs into statistics: estimates with confidence intervals, tests against a control, dose-response fits with lack-of-fit tests, response surfaces for mixtures.
+    - Every map hides a different, lawful world: additives act through hidden traits shared by families; curves come in six shapes.
+    - Adopting a finding unlocks an industrial recipe whose true effect is applied in production and never displayed.
+    - Advanced test bench (oil era): any additive in any amount, fluids included, alone or combined, dosed by panel or circuit.
+    - Formulation plants mix adopted compositions for formulated recipes.
+    - Alternate routes: two hand-written alternative recipes per target, whose real yield is hidden per map.
+    - Discovery chains: spent residues hint at refined catalysts, unlocked by adopting a residue.
+  Changes:
+    - Analysis stations and advanced benches reserve their slots (samples, packs, each input), so one input fed without limit cannot block them.

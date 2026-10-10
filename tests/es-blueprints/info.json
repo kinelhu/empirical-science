@@ -1,0 +1,2 @@
+{"name": "es-blueprints", "version": "0.1.0", "title": "Empirical Science: example blueprint generator", "author": "kinelhu",
+ "factorio_version": "2.0", "dependencies": ["empirical-science"]}
