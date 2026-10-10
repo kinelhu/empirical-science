@@ -217,7 +217,7 @@ sequenceDiagram
 | `storage.benches` | Each bench, scheduled through `storage.bench_wheel`. |
 | `storage.crafters` | Each machine making a target, polled through `storage.crafter_buckets`. |
 | `storage.doses` | Each dosed machine's rows, circuit mode and last status. |
-| `storage.hoppers` | Each hopper: whether it is a fluid hopper (then it is its own port), reporter, chute and flange drawings. |
+| `storage.hoppers` | Each hopper: whether it is a fluid hopper (then it is its own port), reporter, chute and flange drawings, and `anim`, the animation drawn while it hands out a dose. |
 | `storage.dossier_made` | Products made by dosed machines, per force, target and composition key (dossier volumes). |
 | `storage.dossier_state`, `storage.dossier_seen`, `storage.dossier_dirty`, `storage.dossier_finished`, `storage.dossier_announced` | Dossiers judged per force, when last judged, the tick a force finished, and the findings already announced. |
 | `storage.badges` | Each dosed machine's alt-mode dose drawing and the signature it was drawn for. |
@@ -279,4 +279,6 @@ Each is enforced somewhere; if you change one, change its guard.
 | `scripts/sample_worlds.sh` | Samples worlds for `docs/balance.py` (reused when unchanged; `ES_STRENGTH=harsh` for the harsh sample). |
 | `scripts/balance.sh` | The balance model at standard and harsh; writes `docs/balance.md` and the findings thresholds. |
 | `scripts/ground_truth.sh` | One map's hidden world as JSON (and its best two-additive mixtures). |
+| `scripts/tips_check.sh` | The circuit tips' scenes without Space Age or Quality (`tests/tips-check`). |
+| `scripts/build_release.sh` | The mod portal's zip from a commit, loaded in a clean profile. |
 | `scripts/world_report.sh` | A seed's field report (`docs/world_report`): the robot's first run, the world's structure, chain leverage, hypotheses derived from the seed's data, per-target best moves; a designer's QA page (spoils the map). |
