@@ -76,7 +76,9 @@ def recolour(img, band_centre, band_half, new_hue, sat_min=0.0, sat_max=1.0, sat
 # rails, inside the machinery region of each frame, turned a light cool steel. Only warm pixels in
 # smooth areas (low local contrast) change, blended in RGB toward a neutral of their own brightness, so
 # gears keep their detail, copper keeps its colour and the shading stays (chosen from three variants).
-DECK = dict(std_max=0.32, gain=1.55, blur=3.0, tint=(0.93, 0.96, 1.0), frame=(214, 226), region=(40, 0, 172, 152))
+# (Factorio 2.1 split assembler 1 into a still base and a moving sheet of the machinery, drawn over the base's
+# middle: the deck is whitened on the moving sheet, every frame whole.)
+DECK = dict(std_max=0.32, gain=1.55, blur=3.0, tint=(0.93, 0.96, 1.0), frame=(140, 158), region=(0, 0, 140, 158))
 
 
 def whiten_deck(img, std_max, gain, blur, tint, frame, region):
@@ -107,7 +109,11 @@ def load(rel):
 # Paint recipes. Assembler 1's panels are a low-saturation grey-green; assembler 2's are blue.
 # Assembler 1: only the outer frame and front panels; its machinery shares the panels' grey-green.
 TEAL = dict(band_centre=110, band_half=60, new_hue=178, sat_min=0.04, sat_max=0.45, sat_gain=3.0,
-            frame=(214, 226), keep=(40, 0, 172, 152))
+            frame=(198, 184), keep=(29, 0, 169, 136))
+# (2.1) Assembler 1's still base (198x184) and its machinery sheet (8 x 8 frames of 140x158), drawn over the
+# base's middle: the base's panels are painted outside the box the machinery covers.
+BENCH_BASE = "entity/assembling-machine-1/assembling-machine-1-base.png"
+BENCH_ANIM = "entity/assembling-machine-1/assembling-machine-1-anim.png"
 
 # The empirical science pack (0.72, user: the teal red-science flask read as chemical science; a late-game
 # base, a tint no pack uses; chosen from candidate sheets): the metallurgic flask, its orange liquid a pale
@@ -133,7 +139,7 @@ TEAL_ICON = {k: v for k, v in TEAL.items() if k not in ("frame", "keep")}
 
 JOBS = [
     # (output, source, crop box or None for the whole sheet, recipe)
-    ("test-bench.png", "entity/assembling-machine-1/assembling-machine-1.png", None, TEAL),
+    ("test-bench.png", BENCH_BASE, None, TEAL),
 ]
 
 # The analysis station (0.70, user): the lab's idle frame with its golden struts in the test bench's teal and
@@ -151,10 +157,22 @@ def icon_from(img, name):
     square.resize((64, 64), Image.LANCZOS).save(OUT / name, optimize=True)
 
 
+def bench_frame():
+    """The bench as drawn: its painted base with the first frame of its machinery over it (2.1)."""
+    base = Image.open(OUT / "test-bench.png").convert("RGBA")
+    anim = Image.open(OUT / "test-bench-anim.png").convert("RGBA").crop((0, 0, 140, 158))
+    # Base shift (0, 4) px, machinery shift (0, -27) px (half-scale pixels: 0.125 and -0.42 tiles): the
+    # machinery's top stands 22 px above the base's.
+    out = Image.new("RGBA", (198, 184 + 22), (0, 0, 0, 0))
+    out.alpha_composite(base, (0, 22))
+    out.alpha_composite(anim, (29, 0))
+    return out
+
+
 # The test bench's icon from its own recoloured frame (0.70, user: the icon stayed vanilla; assembler 1's icon
 # is drawn in rust browns, so no recolour of it reaches the bench's teal).
 def make_bench_icon():
-    icon_from(Image.open(OUT / "test-bench.png").convert("RGBA").crop((0, 0, 214, 226)), "test-bench-icon.png")
+    icon_from(bench_frame(), "test-bench-icon.png")
     print("test-bench-icon.png (from the frame)")
 
 
@@ -211,9 +229,14 @@ def make_sample_icon():
 TEAL_RGB = None                    # the test bench's paint, set in make_hopper()
 
 
+# The bench's paint as measured on assembler 1 before Factorio 2.1 (its sheet then held the whole machine), kept so
+# the hopper, fluid hopper and station keep their colour: measured on 2.1's base it comes out greener.
+TEAL_RGB_2_0 = np.array([0.38028169014084506, 1.0, 0.9718309859154929])
+
+
 def teal_of_bench():
-    """The test bench's paint: the median colour of its recoloured pixels (hue near 178)."""
-    img = recolour(load("entity/assembling-machine-1/assembling-machine-1.png").crop((0, 0, 214, 226)), **TEAL)
+    """The test bench's paint: the median colour of its recoloured pixels (hue near 178). Not used since 2.1."""
+    img = recolour(load(BENCH_BASE), **TEAL)
     a = np.asarray(img).astype(float) / 255
     hsv = rgb_to_hsv(a[..., :3])
     m = (hue_distance(hsv[..., 0], 178) < 8) & (hsv[..., 1] > 0.3) & (a[..., 3] > 0.9)
@@ -229,7 +252,7 @@ REQUESTER_FRAME = (66, 74)   # one frame of logistic-chest/requester-chest.png; 
 
 def make_hopper(made):
     global TEAL_RGB
-    TEAL_RGB = teal_of_bench()
+    TEAL_RGB = TEAL_RGB_2_0
     w, h = REQUESTER_FRAME
     sheet = load("entity/logistic-chest/requester-chest.png")
     frame = sheet.crop((6 * w, 0, 7 * w, h))
@@ -443,7 +466,7 @@ def make_achievements():
 def make_thumbnail():
     """Mod portal thumbnail (144x144, the mod's root): the test bench (its first frame) with research data
     as a badge, on the dark background the portal shows thumbnails on. Vanilla art, recoloured."""
-    bench = Image.open(OUT / "test-bench.png").convert("RGBA").crop((0, 0, 214, 226))
+    bench = bench_frame()
     # The sprite's baked soft shadow (dark, semi-transparent edge pixels) reads as a grey halo on light
     # backgrounds: drop it, keep everything solid.
     a = np.asarray(bench).astype(float)
@@ -469,7 +492,7 @@ def main():
             img = img.crop(box)
         out = recolour(img, **recipe)
         if name == "test-bench.png":
-            out = whiten_deck(out, **DECK)
+            whiten_deck(load(BENCH_ANIM), **DECK).save(OUT / "test-bench-anim.png", optimize=True)
         out.save(OUT / name, optimize=True)
         made.append((name, img, out))
         print(f"{name}: {out.size[0]}x{out.size[1]}")
@@ -493,8 +516,7 @@ def main():
     make_achievements()
     if "--sheet" in sys.argv:  # before/after contact sheet of the building frames, for review
         path = sys.argv[sys.argv.index("--sheet") + 1]
-        frames = [(n, b.crop((0, 0, 214, 226)) if n == "test-bench.png" else b, a.crop((0, 0, 214, 226))
-                   if n == "test-bench.png" else a) for n, b, a in made if not n.endswith("icon.png")]
+        frames = [(n, b, a) for n, b, a in made if not n.endswith("icon.png")]
         sheet = Image.new("RGBA", (len(frames) * 240, 480), (40, 40, 40, 255))
         for i, (_, before, after) in enumerate(frames):
             sheet.paste(before, (i * 240, 0), before)

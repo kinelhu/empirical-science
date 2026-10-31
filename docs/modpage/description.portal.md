@@ -1,26 +1,28 @@
 # Empirical Science
 
-Feed a machine an ordinary item beside its recipe, such as coal, stone or sulfur, and it can make more products, run slower or pollute less. Which additive helps which recipe is hidden, and it differs on every map. Test benches run trials, analysis stations read the samples, and hoppers dose your machines with what works.
+In Factorio, science is a crafting recipe: put the packs in a lab and the technology arrives, the same on every map. This mod adds research of the other kind. You have a question, the answer is hidden in your map, and the only way to learn it is to run experiments and read the data.
+
+Feed a machine an ordinary item beside its recipe, such as coal, stone or sulfur, and it may make more products, run slower or pollute less. It may also do nothing at all, or do harm. Which additive helps which recipe is drawn fresh for every map. No wiki has the answer, and what you learned in your last game does not carry over.
 
 ![Trial, sample, analysis, dosed production, findings](https://raw.githubusercontent.com/kinelhu/empirical-science/main/docs/modpage/images/loop.png)
+
+## Doing science
+
+- **One sample proves little.** Measurements are noisy. An analysis station reads each sample against a control and gives an estimate with a range, and the range narrows only as samples accumulate. You decide when the evidence is good enough to bet a factory on.
+- **Effects trade off.** An additive that adds products can also slow the machine, raise its pollution or change its power use. Some help at a low dose and harm at a high one, so finding the best dose is an experiment of its own.
+- **Patterns carry, up to a point.** The mod studies 35 recipes and 33 additives. Additives belong to families and recipes to processes, so a result on gears hints at steel. Testing every mixture at every dose, temperature and planet would take about 19 billion trials. The Theory tab fits the family laws to your evidence and says which trials are worth running.
+- **Open questions pay.** Analysing samples makes empirical science packs, and a sample makes more when its question has few results. Repeating a settled result earns less than asking something new.
+- **The truth comes out at the end.** When you finish, the report sets each of your findings against the true effect. A 95% bound still misses now and then, and if one of yours did, you earn an achievement for it: Replication crisis.
 
 ## How it plays
 
 - **Trials.** A test bench makes a batch of a recipe with a dose of an additive, taken from a hopper beside it. Most of the batch comes out, and one sample with it.
-- **Analysis.** An analysis station reads samples against a control, using science packs, and gives each result an estimate and a range. More samples narrow the range.
-- **Empirical science packs.** Analysing samples makes empirical science packs, which labs use for the mod's technologies. A sample makes more packs when its question has few results.
+- **Analysis.** An analysis station reads samples, using science packs. A large lab needs several stations.
+- **Empirical science packs.** Labs use them for the mod's technologies.
 - **Production.** A hopper doses the machines it touches that make a recipe the mod studies. A fluid hopper doses the machines along its sides. A dose that works makes more products per craft. Solid additives leave a residue, which leaves the machine with its products.
 - **Findings.** A finding is an effect you proved and then produced with. Meet each reached planet's quota and enough major findings to finish. You can keep playing after.
 
 ![A hopper doses a machine: more products, and a residue](https://raw.githubusercontent.com/kinelhu/empirical-science/main/docs/modpage/images/dosing.png)
-
-## A different world on every map
-
-The effects are hidden and differ on every map. The mod studies 35 recipes and 33 additives. Additives belong to families and recipes to processes, so an additive that helps gears usually helps steel too. Results from another map do not apply to yours.
-
-Testing every mixture of additives, at every dose, temperature and planet, would take about 19 billion trials. The Theory tab fits the family laws to your evidence and says which trials are worth running.
-
-An additive that adds products can also slow the machine, change its pollution, or change its power use, and differently on different processes. Some additives help at a low dose and harm at a high one.
 
 ## The Empirical Science screen
 

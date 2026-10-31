@@ -34,8 +34,16 @@ function chart.state_for(player_index, kind)
   storage.charts = storage.charts or {}
   local k = key(player_index, kind)
   if not storage.charts[k] then
-    storage.charts[k] = charts.surface.create_render_state(surface_data(),
+    local sd = surface_data()
+    local state = charts.surface.create_render_state(sd,
       {viewport_width = chart.width, viewport_height = chart.height})
+    -- Factorio 2.1 generates the hidden surface's chunks some ticks after the library lays their tiles, and a
+    -- camera shows nothing there until then: generate them now, then lay the background again over them.
+    local c = state.chunk
+    sd.surface.request_to_generate_chunks({c.coord.x + c.tiles_width / 2, c.coord.y + c.tiles_height / 2}, 1)
+    sd.surface.force_generate_chunk_requests()
+    charts.surface.restyle_chunk(sd, c)
+    storage.charts[k] = state
   end
   return storage.charts[k]
 end
@@ -44,6 +52,15 @@ function chart.clear(player_index)
   for _, kind in ipairs({false, "mix", "progress"}) do
     local state = storage.charts and storage.charts[key(player_index, kind or nil)]
     if state then charts.surface.clear_render_state(state) end
+  end
+end
+
+-- factorio-charts 1.3.0 draws on black out-of-map tiles instead of lit lab tiles. Chunks reserved by an older
+-- version keep their lights and tiles until restyled; restyling is idempotent, so every configuration change does it.
+function chart.restyle()
+  if not storage.chart_surface then return end
+  for _, state in pairs(storage.charts or {}) do
+    charts.surface.restyle_chunk(storage.chart_surface, state.chunk)
   end
 end
 

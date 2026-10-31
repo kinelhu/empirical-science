@@ -219,7 +219,7 @@ end
 
 -- Take one science pack of any quality, the lowest held first. Returns its quality prototype, or false
 -- when there is none. A pack's quality stretches it (0.60): it analyses more samples, by vanilla's own
--- durability multiplier for science packs of that quality (pack_samples).
+-- science capacity multiplier for science packs of that quality (pack_samples).
 local qualities_by_level
 local function take_pack(inv, pack)
   if not qualities_by_level then
@@ -239,7 +239,7 @@ end
 
 -- The samples one pack of this quality analyses.
 local function pack_samples(force, quality)
-  return math.max(1, math.floor(samples_per_pack(force) * (quality and quality.tool_durability_multiplier or 1) + 0.5))
+  return math.max(1, math.floor(samples_per_pack(force) * (quality and quality.science_capacity_multiplier or 1) + 0.5))
 end
 
 local function register_crafter(entity)
@@ -292,7 +292,7 @@ local function split_hoppers()
   local lost = 0
   for _, h in pairs(storage.hoppers or {}) do
     if not h.fluid and h.port then
-      local f = h.port.valid and h.port.fluidbox[1]
+      local f = h.port.valid and shared.fluid_at(h.port, 1)
       if f and f.amount > 0 then lost = lost + 1 end
       if h.port.valid then h.port.destroy() end
       h.port = nil
@@ -1209,7 +1209,8 @@ local function process_crafter(crafter)
     -- effect (modules, beacons), the same chance per unit to upgrade, tier by tier, as its crafts.
     local _, recipe_quality = e.get_recipe()
     local base = recipe_quality or prototypes.quality.normal
-    -- The quality effect is scaled by the tier's next_probability (0.2 x 0.1 = a 2% chance).
+    -- The quality effect is scaled by the tier's next_probability (1 in vanilla: a 2% effect, 0.02, is a
+    -- 2% chance); each further tier takes the reached tier's chain_probability, as the engine chains.
     local chance = math.max(0, math.min(1, ((e.effects and e.effects.quality) or 0) * base.next_probability))
     local per_quality = {}
     -- Its own generator: draws from the shared one are not independent of the trial draws around them.
@@ -1220,7 +1221,7 @@ local function process_crafter(crafter)
       local q = base
       if chance > 0 and q.next and rng() < chance then
         q = q.next
-        while q.next and rng() < q.next_probability do q = q.next end
+        while q.next and rng() < q.chain_probability do q = q.next end
       end
       per_quality[q.name] = (per_quality[q.name] or 0) + 1
     end
@@ -1269,7 +1270,7 @@ local function process_crafter(crafter)
   end
   -- Quality agents: each product made this poll comes out a tier up
   -- with the composition's chance. That many are swapped in the output for the next tier (and on, with
-  -- each tier's next_probability, as the engine chains). Products inserters already took are owed and
+  -- each tier's chain_probability, as the engine chains). Products inserters already took are owed and
   -- swapped from the next ones (at most a few crafts' worth). Both flows are recorded.
   local qc = mix and truth.quality_chance(storage.truth, key, mix) or 0
   if qc > 0 then
@@ -1293,7 +1294,7 @@ local function process_crafter(crafter)
         local per_quality = {}
         for _ = 1, n do
           local q = base.next
-          while q.next and rng() < q.next_probability do q = q.next end
+          while q.next and rng() < q.chain_probability do q = q.next end
           per_quality[q.name] = (per_quality[q.name] or 0) + 1
         end
         for quality, count in pairs(per_quality) do
@@ -1310,7 +1311,7 @@ local function process_crafter(crafter)
       -- write to crafting_progress, while the craft goes on).
       if up >= per_craft and e.result_quality and e.result_quality.name == base.name then
         local q = base.next
-        while q.next and rng() < q.next_probability do q = q.next end
+        while q.next and rng() < q.chain_probability do q = q.next end
         e.result_quality = q
         up = up - per_craft
         crafter.upgraded_total = (crafter.upgraded_total or 0) + per_craft  -- for tests
@@ -1558,7 +1559,9 @@ local function scrap_targets(force)
   for _, p in pairs(r and r.products or {}) do
     if p.name ~= shared.scrap.item then
       local amount = p.amount or ((p.amount_min or 0) + (p.amount_max or 0)) / 2
-      share[p.name] = (share[p.name] or 0) + (p.probability or 1) * amount
+      -- (2.1: a product's chance is its independent probability times its share of the shared roll.)
+      local sp = p.shared_probability
+      share[p.name] = (share[p.name] or 0) + (p.independent_probability or 1) * (sp and (sp.max - sp.min) or 1) * amount
     end
   end
   local level = 0
@@ -2090,26 +2093,31 @@ end
 -- writing any one of them: the entity at its output connection is written too.
 -- (Written with the segment's total: writing one pipe's share sets the whole segment to that amount, which
 -- deleted the rest every 10 ticks and burned the charges refilling it; seen in the playtest kit.)
-local function chill(box, i, cold)
-  local f = box[i]
+local function chill(e, i, cold)
+  local f = shared.fluid_at(e, i)
   if f and f.amount > 0 and f.temperature > cold then
-    local total = box.get_fluid_segment_contents(i)
-    box[i] = {name = f.name, amount = total and total[f.name] or f.amount, temperature = cold}
+    local seg = e.has_fluid_segment(i) and e.get_fluid_segment_fluid(i)
+    if seg and seg.name == f.name then
+      e.set_fluid_segment_fluid(i, {name = f.name, amount = seg.amount, temperature = cold})
+    else
+      e.set_fluid(i, {name = f.name, amount = f.amount, temperature = cold})
+    end
   end
 end
 local function chill_tick()
   local cold = shared.chilled.temperature
   for unit, e in pairs(storage.chillers) do
     if e.valid then
-      chill(e.fluidbox, 2, cold)
-      for _, cn in ipairs(e.fluidbox.get_pipe_connections(2)) do
+      chill(e, 2, cold)
+      local out = shared.fluid_at(e, 2)
+      for _, cn in ipairs(e.get_fluid_box_pipe_connections(2)) do
         -- (Not the chiller itself, whose edge the point may touch: chilling its input would make it heat that
         -- from the cold again, burning a hundred times the charge's due. Seen in the playtest kit.)
         for _, n in pairs(e.surface.find_entities_filtered{position = cn.target_position}) do
-          if n.unit_number ~= e.unit_number and n.fluidbox and #n.fluidbox > 0 then
-            for i = 1, #n.fluidbox do
-              local f = n.fluidbox[i]
-              if f and e.fluidbox[2] and f.name == e.fluidbox[2].name then chill(n.fluidbox, i, cold) end
+          if n.unit_number ~= e.unit_number and n.fluids_count > 0 then
+            for i = 1, n.fluids_count do
+              local f = n.get_fluid(i)
+              if f and out and f.name == out.name then chill(n, i, cold) end
             end
           end
         end
@@ -2275,6 +2283,7 @@ end)
 
 script.on_configuration_changed(function()
   init_storage()
+  chart.restyle()
   -- Saves from before staging (0.32): every staged tool stays open for the forces that exist (nothing
   -- they used disappears; Precision instruments is not given away), the stage technologies researched.
   if not storage.staging then
@@ -3223,7 +3232,7 @@ remote.add_interface("empirical-science", {
   platform_move = function()
     local pt = storage.platform_test
     if not (pt and pt.bench.valid) then return 0 end
-    local out = pt.bench.get_inventory(defines.inventory.assembling_machine_output)
+    local out = pt.bench.get_inventory(defines.inventory.crafter_output)
     local n = 0
     for i = 1, #out do
       local st = out[i]
@@ -3922,7 +3931,7 @@ remote.add_interface("empirical-science", {
     local pool = gui.pool(force, skey or "nauvis")
     local out = {}
     local function time(name, fn)
-      local p = game.create_profiler()
+      local p = helpers.create_profiler()
       fn()
       p.stop()
       table.insert(out, {name, p})

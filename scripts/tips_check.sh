@@ -11,7 +11,7 @@ ln -sfn "$REPO/empirical-science" "$TC/mods/empirical-science"
 rm -f "$TC/mods/es-tips-check"
 ln -sfn "$REPO/tests/tips-check" "$TC/mods/tips-check"
 ln -sfn "$CHARTS" "$TC/mods/factorio-charts"
-printf '{"mods": [{"name": "base", "enabled": true}, {"name": "empirical-science", "enabled": true}, {"name": "factorio-charts", "enabled": true}, {"name": "tips-check", "enabled": true}, {"name": "space-age", "enabled": false}, {"name": "quality", "enabled": false}, {"name": "elevated-rails", "enabled": false}]}' > "$TC/mods/mod-list.json"
+printf '{"mods": [{"name": "base", "enabled": true}, {"name": "empirical-science", "enabled": true}, {"name": "factorio-charts", "enabled": true}, {"name": "tips-check", "enabled": true}, {"name": "space-age", "enabled": false}, {"name": "quality", "enabled": false}, {"name": "elevated-rails", "enabled": false}, {"name": "recycler", "enabled": false}]}' > "$TC/mods/mod-list.json"
 out="$TC/script-output/es-tips-check.txt"
 rm -f "$out" "$TC/saves/t.zip"
 "$FACTORIO" --config "$TC/config/config.ini" --create "$TC/saves/t.zip" > "$TC/create.out" 2>&1 \

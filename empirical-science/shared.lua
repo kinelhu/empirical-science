@@ -121,6 +121,9 @@ table.insert(shared.heaters, {name = shared.chiller.name, from = "boiler", chill
   temperature = shared.premix.cold + shared.chiller.warm, unlock = shared.chilled.unlock,
   fuel_category = "es-cold", requires = "space-age", sprites = "chiller", tower = true,
   ingredients = {{type = "item", name = "boiler", amount = 1}, {type = "item", name = "lithium-plate", amount = 10}}})
+-- The fluid in an entity's fluid storage i, or nil (Factorio 2.1 reads it through LuaEntity::get_fluid; the
+-- index must exist).
+function shared.fluid_at(e, i) return i <= e.fluids_count and e.get_fluid(i) or nil end
 function shared.chilled_of(fluid) return shared.chilled.prefix .. fluid end
 -- A fluid's usual temperature, its evidence unsuffixed and its effect as drawn: a liquid premix's is the one it
 -- is made at (since 0.71 its minimum is the chilled cold), a vanilla fluid's its default. Control stage.

@@ -26,8 +26,8 @@ for expansions in false true; do
   ln -sfn "$CHARTS" "$REL/mods/factorio-charts"
   printf '{"mods": [{"name": "base", "enabled": true}, {"name": "empirical-science", "enabled": true},
     {"name": "factorio-charts", "enabled": true}, {"name": "space-age", "enabled": %s},
-    {"name": "quality", "enabled": %s}, {"name": "elevated-rails", "enabled": %s}]}\n' \
-    "$expansions" "$expansions" "$expansions" > "$REL/mods/mod-list.json"
+    {"name": "quality", "enabled": %s}, {"name": "elevated-rails", "enabled": %s}, {"name": "recycler", "enabled": %s}]}\n' \
+    "$expansions" "$expansions" "$expansions" "$expansions" > "$REL/mods/mod-list.json"
   if ! "$FACTORIO" --config "$REL/config/config.ini" --create "$REL/check.zip" > "$REL/run.out" 2>&1; then
     echo "RELEASE FAILED: the zip does not load (Space Age and Quality: $expansions)"
     grep -hE -A6 "Error" "$REL/factorio-current.log" | head -20

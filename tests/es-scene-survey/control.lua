@@ -68,8 +68,8 @@ local function survey()
           elseif e.position.y - c.y > 5 then held[k] = {status = STATUS[e.status], products = e.products_finished, spent = e.get_item_count("es-spent-coal"),
               fluids = e.type ~= "furnace" and e.get_fluid_contents() or nil, coal = e.get_item_count("coal"),
               output = e.get_output_inventory().get_contents(),
-              trash = e.type == "assembling-machine" and e.get_inventory(defines.inventory.assembling_machine_trash)
-                and e.get_inventory(defines.inventory.assembling_machine_trash).get_contents() or nil,
+              trash = e.type == "assembling-machine" and e.get_inventory(defines.inventory.crafter_trash)
+                and e.get_inventory(defines.inventory.crafter_trash).get_contents() or nil,
               dose = remote.call("empirical-science-scenes", "dose_of", e.unit_number)}
             local before = SHOWN and SHOWN[e.unit_number] or 0
             held[k].made_while_shown = e.products_finished - before

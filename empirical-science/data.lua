@@ -47,8 +47,11 @@ local fluid_in = table.deepcopy(data.raw["assembling-machine"]["assembling-machi
 fluid_in.pipe_connections = {{flow_direction = "input", direction = defines.direction.north, position = {0, -1}}}
 bench.fluid_boxes = {fluid_in}
 bench.fluid_boxes_off_when_no_fluid_recipe = true
-swap_file(bench.graphics_set, "__base__/graphics/entity/assembling-machine-1/assembling-machine-1.png",
+-- (2.1: assembler 1 is a still base and a moving sheet of its machinery: both are the bench's own.)
+swap_file(bench.graphics_set, "__base__/graphics/entity/assembling-machine-1/assembling-machine-1-base.png",
   GFX .. "test-bench.png")
+swap_file(bench.graphics_set, "__base__/graphics/entity/assembling-machine-1/assembling-machine-1-anim.png",
+  GFX .. "test-bench-anim.png")
 
 -- Analysis station: a 3x3 container with lab graphics. The script consumes samples and packs.
 local lab = data.raw.lab.lab
@@ -126,7 +129,7 @@ local sample_icons = own_icon("sample-icon.png")
 
 -- Fulgora scrap samples: with Space Age. Scrap with a sample badge;
 -- spoils to nothing; Scrap forensics 1 and 2 widen what a station draws from them.
-if data.raw.item["scrap"] and data.raw.tool["electromagnetic-science-pack"] then
+if data.raw.item["scrap"] and data.raw.item["electromagnetic-science-pack"] then
   local SC = shared.scrap
   data:extend({
     {type = "item", name = SC.item, icons = dt.with_badge(icons_of(data.raw.item["scrap"]), sample_icons), weight = 1000,
@@ -139,7 +142,7 @@ if data.raw.item["scrap"] and data.raw.tool["electromagnetic-science-pack"] then
     for _, p in ipairs(packs) do table.insert(ingredients, {p, 1}) end
     table.insert(ingredients, {"es-research-data", 1})
     data:extend({{type = "technology", name = SC.forensics[level],
-      icons = dt.with_badge(icons_of(data.raw.item["scrap"]), icons_of(data.raw.tool["electromagnetic-science-pack"])),
+      icons = dt.with_badge(icons_of(data.raw.item["scrap"]), icons_of(data.raw.item["electromagnetic-science-pack"])),
       prerequisites = level == 1 and {"es-empirical-method", "electromagnetic-science-pack"} or {SC.forensics[1]},
       effects = {{type = "nothing", effect_description = {"es-tech-effect." .. SC.forensics[level]}}},
       unit = {count = count, time = 30, ingredients = ingredients}}})
@@ -195,7 +198,7 @@ for i, a in ipairs(shared.additives) do
     -- found (the showcase factory stalled; a test now checks every residue recipe of a fuel).
     data:extend({{type = "item", name = a.name, icons = icons, localised_description = {"item-description.es-residue"},
       subgroup = "es-spent", order = tostring(i), stack_size = 100},
-      {type = "recipe", name = a.name, category = "crafting", enabled = false,
+      {type = "recipe", name = a.name, categories = {"crafting"}, enabled = false,
        energy_required = 1, ingredients = {{type = "item", name = a.spent_of, amount = 1}},
        results = {{type = "item", name = a.name, amount = 1}}, allow_productivity = false, allow_decomposition = false,
        -- Never reclaimed (0.39): no recycler reversal back to the family member (0.68: Space Age's
@@ -264,7 +267,7 @@ hopper.icon = nil
 -- Its own sprite (0.71, scripts/make_sprites.py): vanilla's requester chest with its hatch open, in the test
 -- bench's teal (user: the steel chest felt low-tech), drawn as the requester chest is, with its shadow.
 do
-  local req = data.raw["logistic-container"]["requester-chest"].animation.layers
+  local req = data.raw["logistic-container"]["requester-chest"].robot_door.animation.layers
   local body, shadow = table.deepcopy(req[1]), table.deepcopy(req[2])
   body.filename, body.frame_count, body.line_length, body.animation_speed = GFX .. "hopper.png", nil, nil, nil
   shadow.repeat_count = nil
@@ -328,10 +331,21 @@ fluid_hopper.corpse, fluid_hopper.dying_explosion = pump.corpse, pump.dying_expl
 fluid_hopper.fluid_box = {volume = 200, pipe_covers = table.deepcopy(pump.fluid_box.pipe_covers),
   pipe_connections = {{direction = defines.direction.north, position = {0, -0.5}},
                       {direction = defines.direction.south, position = {0, 0.5}}}}
+-- (2.1: each direction of vanilla's pump is layers, its body first; 2.0 drew the body alone.)
+local function pump_body(d) local v = pump.animations[d]; return v.layers and v.layers[1] or v end
 local function pump_frame(d)
-  local v = pump.animations[d]
-  return {layers = {{filename = GFX .. "fluid-hopper-" .. d .. ".png", width = v.width, height = v.height,
-    shift = v.shift, scale = v.scale}}}
+  local v = pump_body(d)
+  local layers = {{filename = GFX .. "fluid-hopper-" .. d .. ".png", width = v.width, height = v.height,
+    shift = v.shift, scale = v.scale}}
+  -- (2.1: vanilla's pump draws its shadow as its own layer; its first frame, under the hopper's.)
+  local all = pump.animations[d].layers
+  for _, l in ipairs(all or {}) do
+    if l.draw_as_shadow then
+      table.insert(layers, {filename = l.filename, width = l.width, height = l.height, shift = l.shift,
+        scale = l.scale, draw_as_shadow = true})
+    end
+  end
+  return {layers = layers}
 end
 fluid_hopper.pictures = {picture = {north = pump_frame("north"), east = pump_frame("east"), south = pump_frame("south"),
   west = pump_frame("west")}, window_background = empty_sprite, fluid_background = empty_sprite,
@@ -353,12 +367,12 @@ do
     return {filename = GFX .. filename, width = f.width, height = f.height, scale = src.scale, shift = shift,
       line_length = line_length, frame_count = frame_count, frame_sequence = sequence}
   end
-  local req = data.raw["logistic-container"]["requester-chest"].animation.layers[1]
+  local req = data.raw["logistic-container"]["requester-chest"].robot_door.animation.layers[1]
   local iris = part("iris", "hopper-iris.png", req, 7, 7, {7, 6, 5, 4, 3, 2, 1, 1, 2, 3, 4, 5, 6, 7})
   iris.type, iris.name = "animation", "es-hopper-iris"
   data:extend({iris})
   for _, d in ipairs({"north", "east", "south", "west"}) do
-    local a = part(d, "fluid-hopper-" .. d .. "-anim.png", pump.animations[d], 8, 32)
+    local a = part(d, "fluid-hopper-" .. d .. "-anim.png", pump_body(d), 8, 32)
     a.type, a.name = "animation", "es-fluid-hopper-" .. d
     data:extend({a})
   end
@@ -452,7 +466,7 @@ local function lab_with(badge)
   return icons
 end
 local precision_icons = lab_with({{icon = "__core__/graphics/icons/search.png", icon_size = 32}})
-local throughput_icons = lab_with(icons_of(data.raw.tool["automation-science-pack"]))
+local throughput_icons = lab_with(icons_of(data.raw.item["automation-science-pack"]))
 data:extend({
   (function()  -- level 1 also measures speed and pollution (staged reveal)
     local t = branch("es-precision-instruments", 1, 1, nil, precision_icons)
@@ -524,10 +538,10 @@ if mods["space-age"] and data.raw.fluid["fluoroketone-cold"] then
   end
   axis_tech("es-pressure-heating", "metallurgic-science-pack",
     {"automation-science-pack", "logistic-science-pack", "chemical-science-pack", "metallurgic-science-pack"}, 300,
-    data.raw.tool["metallurgic-science-pack"])
+    data.raw.item["metallurgic-science-pack"])
   axis_tech(CH.unlock, "cryogenic-science-pack",
     {"automation-science-pack", "logistic-science-pack", "chemical-science-pack", "cryogenic-science-pack"}, 300,
-    data.raw.tool["cryogenic-science-pack"])
+    data.raw.item["cryogenic-science-pack"])
   -- Chilled twins: in data-final-fixes, once the liquid premixes exist too.
   -- (0.72) Their temperatures from the mod's values, not typed in the descriptions.
   local hot
@@ -545,7 +559,7 @@ if mods["space-age"] then
   data:extend({
     {type = "fuel-category", name = "es-pressure"},
     {type = "item", name = PC.item, icons = icons, subgroup = "energy", order = "b[steam-power]-z[es-pressure-charge]",
-     fuel_category = "es-pressure", fuel_value = PC.fuel_mj .. "MJ", stack_size = 50},
+     fuel_categories = {"es-pressure"}, fuel_value = PC.fuel_mj .. "MJ", stack_size = 50},
     {type = "recipe", name = PC.item, enabled = false, energy_required = PC.seconds,
      ingredients = {{type = "item", name = "tungsten-carbide", amount = PC.carbide},
                     {type = "item", name = "solid-fuel", amount = PC.solid_fuel}},
@@ -561,8 +575,8 @@ if mods["space-age"] then
   data:extend({
     {type = "fuel-category", name = "es-cold"},
     {type = "item", name = CC.item, icons = cold_icons, subgroup = "energy", order = "b[steam-power]-z[es-cold-charge]",
-     fuel_category = "es-cold", fuel_value = CC.fuel_mj .. "MJ", stack_size = 50},
-    {type = "recipe", name = CC.item, category = "cryogenics", enabled = false, energy_required = CC.seconds,
+     fuel_categories = {"es-cold"}, fuel_value = CC.fuel_mj .. "MJ", stack_size = 50},
+    {type = "recipe", name = CC.item, categories = {"cryogenics"}, enabled = false, energy_required = CC.seconds,
      ingredients = {{type = "fluid", name = "fluoroketone-cold", amount = CC.fluoroketone}},
      results = {{type = "item", name = CC.item, amount = 1},
                 {type = "fluid", name = "fluoroketone-hot", amount = CC.fluoroketone, temperature = 180}},
@@ -812,7 +826,7 @@ for i, a in ipairs(shared.additives) do
       shift = {8, -8}})
     data:extend({
       {type = "item", name = a.name, icons = icons, subgroup = "es-spent", order = "r-" .. i, stack_size = 50},
-      {type = "recipe", name = shared.refine_recipe(parent), category = "chemistry", enabled = false,
+      {type = "recipe", name = shared.refine_recipe(parent), categories = {"chemistry"}, enabled = false,
        energy_required = shared.refine.seconds,
        ingredients = {{type = "item", name = a.refined_from, amount = shared.refine.spent},
                       {type = "fluid", name = "sulfuric-acid", amount = shared.refine.acid}},
@@ -871,7 +885,7 @@ for i, a in ipairs(shared.additives) do
       table.insert(ingredients, {type = "item", name = "sulfur", amount = math.ceil(shared.premix.sulfur * k)})
     end
     local recipe = {type = "recipe", name = shared.premix_recipe(a.premix_of[1], a.premix_of[2], a.volatile),
-      category = category, enabled = false, energy_required = shared.premix.seconds, ingredients = ingredients,
+      categories = {category}, enabled = false, energy_required = shared.premix.seconds, ingredients = ingredients,
       results = {{type = "item", name = a.name, amount = shared.premix.out}}, allow_decomposition = false,
       hide_from_player_crafting = true, hidden_in_factoriopedia = true,
       localised_name = name, icons = icons, subgroup = "es-premixes", order = string.format("%04d", i)}

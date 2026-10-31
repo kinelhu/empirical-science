@@ -134,11 +134,11 @@ function report.open_gui(player, hopper)
   local circuit = shared.stage_ok(player.force, shared.circuit_tech)
   local rec = storage.hoppers[hopper.unit_number]
   local is_fluid = rec and rec.fluid
-  local fluid = is_fluid and rec.port.valid and rec.port.fluidbox[1]
+  local fluid = is_fluid and rec.port.valid and shared.fluid_at(rec.port, 1)
   if not (circuit or is_fluid) then return end
   local frame = player.gui.relative.add{type = "frame", name = "es_hopper", direction = "vertical",
     caption = {"es.hopper-title"},
-    anchor = {gui = is_fluid and defines.relative_gui_type.storage_tank_gui or defines.relative_gui_type.container_gui,
+    anchor = {gui = is_fluid and defines.relative_gui_type.pipe_gui or defines.relative_gui_type.container_gui,
       position = defines.relative_gui_position.right, name = hopper.name}}
   if is_fluid then
     frame.add{type = "label", name = "fluid", caption = fluid and {"es.hopper-fluid", "[fluid=" .. fluid.name .. "]",

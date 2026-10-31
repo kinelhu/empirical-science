@@ -139,7 +139,7 @@ local function build_target(ti, target, method_unlocks)
     table.insert(results, 1, {type = "item", name = target.result, amount = target.survivors})
   end
   data:extend({{
-    type = "recipe", name = name, category = "es-experiment",
+    type = "recipe", name = name, categories = {"es-experiment"},
     localised_name = {"recipe-name.es-trial-control",
       item_proto(target.result).localised_name  -- (other mods' items; a placeable item may be named by its entity)
         or {"?", {"item-name." .. target.result}, {"entity-name." .. target.result}}},

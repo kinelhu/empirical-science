@@ -246,6 +246,12 @@ script.on_event(defines.events.on_tick, function(event)
     pn = panel(player)
     check("fit line shows a fit for stone", pn.pages.dose.fit.line1.caption ~= "", serpent.line(pn.pages.dose.fit.line1.caption))
     check("chart has render objects", es("chart_objects", player.index) > 20, es("chart_objects", player.index))
+    -- Under 2.1 the hidden surface generated a chart's area some ticks after it was reserved, and the first
+    -- chart a player opened showed nothing until then.
+    local cam = pn.pages.dose.chart
+    local cpos = {x = math.floor(cam.position.x / 32), y = math.floor(cam.position.y / 32)}
+    check("the first chart's area is generated when it is drawn", game.surfaces[cam.surface_index].is_chunk_generated(cpos),
+      serpent.line(cpos))
     check("detail table filled", #pn.pages.dose.detail_scroll.detail.children > 6, #pn.pages.dose.detail_scroll.detail.children)
     -- Screenshots with the GUI, for a human (or Claude) to look at: current zoom, then zoom 1.
     storage.camera_zoom = pn.pages.dose.chart.zoom
@@ -253,14 +259,17 @@ script.on_event(defines.events.on_tick, function(event)
       player.display_scale, pn.pages.dose.chart.zoom, player.display_resolution.width, player.display_resolution.height))
     check("drop-downs show the selection", pn.pages.dose.head.additive.selected_index == 3
       and pn.top.target.selected_index == 1, pn.pages.dose.head.additive.selected_index)
-    shot(player, "es-panel-gear.png")
     return
+  elseif p == 1862 then
+    -- Under 2.1 a camera shows a change a frame late: a shot in the changing tick showed an empty chart.
+    shot(player, "es-panel-gear.png")
   elseif p == 1865 then
     panel(player).pages.selected_tab_index = 1
     shot(player, "es-panel-screening.png")
   elseif p == 1870 then
     -- Its own moment: a screenshot is taken at the end of the tick, after any later tab switch.
     panel(player).pages.selected_tab_index = 3
+  elseif p == 1872 then
     shot(player, "es-panel-mixtures.png")
   elseif p == 1880 then
     panel(player).pages.selected_tab_index = 2
@@ -268,6 +277,7 @@ script.on_event(defines.events.on_tick, function(event)
     local pn = panel(player)
     -- Second view: the engine target, to see another chart and the target drop-down.
     es("gui_set", player.index, {target = 3, additive = A(player, "coal"), model = 2})
+  elseif p == 1902 then
     shot(player, "es-panel-engine.png")
   elseif p == 1910 then
     -- The effect selector: gears, stone, speed; the chart and fit follow.
@@ -276,6 +286,7 @@ script.on_event(defines.events.on_tick, function(event)
     check("effect selector switches the dose-response view to speed", pn.pages.dose.head.effect.selected_index == 2
       and pn.pages.mixtures.head.effect.selected_index == 2 and es("chart_objects", player.index) > 10,
       pn.pages.dose.head.effect.selected_index)
+  elseif p == 1912 then
     shot(player, "es-panel-speed.png")
   elseif p == 1914 then
     -- The full cost view (0.44): the price row shows, the chart and fit follow, a preset can be chosen.
@@ -460,7 +471,7 @@ script.on_event(defines.events.on_tick, function(event)
     local blend, slurry
     for name, r in pairs(prototypes.recipe) do
       if name:find("^es%-premix%-") and not name:find("%-v$") then
-        if r.category == "crafting" then blend = blend or name elseif r.category == "chemistry" then slurry = slurry or name end
+        if r.categories[1] == "crafting" then blend = blend or name elseif r.categories[1] == "chemistry" then slurry = slurry or name end
       end
     end
     local before = #panel(player).pages.dose.head.additive.items

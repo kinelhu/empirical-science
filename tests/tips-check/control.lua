@@ -72,7 +72,7 @@ script.on_nth_tick(7200, function(event)
     elseif key == "residues" then
       local r = count("wooden-chest", "es-spent-coal")
       local m = s.find_entities_filtered{name = "assembling-machine-2"}[1]
-      local trash = m and m.get_inventory(defines.inventory.assembling_machine_trash)
+      local trash = m and m.get_inventory(defines.inventory.crafter_trash)
       local sink = s.find_entities_filtered{name = "infinity-chest"}
       local in_sink = 0
       for _, c in pairs(sink) do in_sink = in_sink + c.get_inventory(defines.inventory.chest).get_item_count("es-spent-coal") end
@@ -80,7 +80,7 @@ script.on_nth_tick(7200, function(event)
         trash and trash.get_item_count("es-spent-coal") or -1, in_sink, m and m.products_finished or -1)
     elseif key == "fluid_hoppers" then
       local fh = s.find_entities_filtered{name = "es-fluid-hopper"}[1]
-      local f = fh and fh.fluidbox[1]
+      local f = fh and fh.get_fluid(1)
       local made = 0
       for _, m in pairs(s.find_entities_filtered{name = "assembling-machine-2"}) do made = made + m.products_finished end
       ok, detail = f ~= nil and f.name == "lubricant" and made > 0, string.format("hopper %s, made %d", f and f.name or "empty", made)

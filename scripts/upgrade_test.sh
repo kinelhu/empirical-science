@@ -22,7 +22,7 @@ for commit in "$@"; do
   rm "$UP/mods/es-upgrade-setup"
   ln -sfn "$REPO/empirical-science" "$UP/mods/empirical-science"
   ln -sfn "$REPO/tests/es-upgrade-check" "$UP/mods/es-upgrade-check"
-  printf '{"mods": [{"name": "base", "enabled": true}, {"name": "empirical-science", "enabled": true}, {"name": "factorio-charts", "enabled": true}, {"name": "es-upgrade-check", "enabled": true}, {"name": "quality", "enabled": true}, {"name": "space-age", "enabled": true}, {"name": "elevated-rails", "enabled": true}]}' > "$UP/mods/mod-list.json"
+  printf '{"mods": [{"name": "base", "enabled": true}, {"name": "empirical-science", "enabled": true}, {"name": "factorio-charts", "enabled": true}, {"name": "es-upgrade-check", "enabled": true}, {"name": "quality", "enabled": true}, {"name": "space-age", "enabled": true}, {"name": "elevated-rails", "enabled": true}, {"name": "recycler", "enabled": true}]}' > "$UP/mods/mod-list.json"
   if ! "$FACTORIO" --config "$UP/config/config.ini" --benchmark "$UP/saves/old.zip" --benchmark-ticks 3700 > "$UP/load.out" 2>&1; then
     echo "[$version -> current] LOAD FAILED"; grep -hA8 "Error" "$UP/load.out" "$UP/factorio-current.log" | head -16; status=1; continue
   fi

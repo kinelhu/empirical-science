@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.73.0
+Date: 2026-10-31
+  Changes:
+    - Ported to Factorio 2.1. Needs Factorio Charts 1.3.0.
+    - Charts are drawn on a black background, as the vanilla production graph is.
+    - The test bench, fluid hopper and fluid heater are redrawn from Factorio 2.1's new assembling machine, pump and heat exchanger graphics.
+  Bugfixes:
+    - The first chart opened on a map no longer shows empty for a moment.
+---------------------------------------------------------------------------------------------------
 Version: 0.72.0
 Date: 2026-10-10
   Changes:

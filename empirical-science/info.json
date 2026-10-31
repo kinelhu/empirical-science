@@ -1,14 +1,14 @@
 {
   "name": "empirical-science",
-  "version": "0.72.0",
+  "version": "0.73.0",
   "title": "Empirical Science",
   "author": "kinelhu",
-  "description": "Feed ordinary items into machines as additives: some raise yield, speed or cleanliness. Which additive helps which recipe is hidden and differs on every map. Run trials, analyse the samples, and dose your factory with what you prove.",
-  "factorio_version": "2.0",
+  "description": "Ever wanted to earn your Factorio PhD? Research as real experiment. Every map hides which ordinary items, fed to a machine beside its recipe, raise its yield, speed or cleanliness. Test them against a control until the noisy evidence is strong enough to bet on, then dose your factory with what you proved.",
+  "factorio_version": "2.1",
   "dependencies": [
-    "base >= 2.0",
-    "factorio-charts >= 1.1.0",
-    "? space-age >= 2.0",
-    "? quality >= 2.0"
+    "base >= 2.1",
+    "factorio-charts >= 1.3.0",
+    "? space-age >= 2.1",
+    "? quality >= 2.1"
   ]
 }

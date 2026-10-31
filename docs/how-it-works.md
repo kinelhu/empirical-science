@@ -68,7 +68,7 @@ flowchart LR
 - **Living additives** (Gleba: yumako mash, jelly, nutrients, eggs, bioflux, spoilage) work best at a
   hidden ripeness; a dose records how far its units had spoiled, and evidence keeps ripeness bands
   (`shared.ripe_band`). Space-only targets (`own_stream`) inherit a platform's zero gravity, so their trials
-  run only in space. A science pack of higher quality analyses `tool_durability_multiplier` times as many
+  run only in space. A science pack of higher quality analyses `science_capacity_multiplier` times as many
   samples (`pack_samples`).
 - **Findings** (the ending, `scripts/dossiers.lua`; "dossier" in code): a target's proven effect (lower bound
   above its readout's threshold, its planet's own since 0.70 (`dossiers.standard_for`), in one planet's evidence) put into production (`shared.dossier.volume_batches`

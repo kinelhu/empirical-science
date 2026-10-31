@@ -64,7 +64,7 @@ local function power()
   for x = -90, -81 do for y = -40, -31 do table.insert(tiles, {name = "water", position = {x, y}}) end end
   s.set_tiles(tiles)
   local pump = place("offshore-pump", -85.5, -29.5, N)
-  local out = pump.fluidbox.get_pipe_connections(1)[1].target_position
+  local out = pump.get_fluid_box_pipe_connections(1)[1].target_position
   local boilers = {}
   -- Four boilers on four coal drills (2 coal/s, 8 MW of fuel for 7.2 MW of boilers): with two drills for
   -- three boilers, power was capped by coal mining, and a brownout slowed the coal drills too.
@@ -78,7 +78,7 @@ local function power()
     part("boiler " .. i, boilers[i])
   end
   local inlet
-  for _, c in ipairs(boilers[1].fluidbox.get_pipe_connections(1)) do
+  for _, c in ipairs(boilers[1].get_fluid_box_pipe_connections(1)) do
     if c.target_position.x < -63 then inlet = c.target_position end
   end
   pipe(out.x, out.y, inlet.x, out.y)
@@ -423,7 +423,7 @@ local function oil(activation, residue)
   for x = 14, 23 do for y = -24, -15 do table.insert(tiles, {name = "water", position = {x, y}}) end end
   s.set_tiles(tiles)
   local pump = place("offshore-pump", 18.5, -13.5, N)
-  local wt = pump.fluidbox.get_pipe_connections(1)[1].target_position
+  local wt = pump.get_fluid_box_pipe_connections(1)[1].target_position
   local s1 = place("chemical-plant", 4.5, 1.5, N); s1.set_recipe("sulfur")
   local a = place("chemical-plant", 8.5, 1.5, N); a.set_recipe("sulfuric-acid")
   part("sulfur", s1); part("sulfuric acid", a)
@@ -442,25 +442,25 @@ local function oil(activation, residue)
   -- A machine with a recipe lists only the fluidboxes it uses: find them by role (and by fluid).
   local function box(entity, kind, fluid, pick)
     -- By the connection's flow direction (a box's prototype did not always report its production type).
-    for i = 1, #entity.fluidbox do
-      local locked = entity.fluidbox.get_locked_fluid and entity.fluidbox.get_locked_fluid(i)
+    for i = 1, entity.fluids_count do
+      local locked = (entity.get_fluid_filter(i) or {}).name
       local best
-      for _, c in ipairs(entity.fluidbox.get_pipe_connections(i)) do
+      for _, c in ipairs(entity.get_fluid_box_pipe_connections(i)) do
         if c.flow_direction == kind and (not fluid or locked == fluid)
             and (not best or (pick == "east" and c.target_position.x > best.x)) then best = c.target_position end
       end
       if best then return best end
     end
     local have = {}
-    for i = 1, #entity.fluidbox do
-      table.insert(have, tostring(entity.fluidbox.get_prototype(i).production_type) .. "/"
-        .. tostring(entity.fluidbox.get_locked_fluid and entity.fluidbox.get_locked_fluid(i)))
+    for i = 1, entity.fluids_count do
+      table.insert(have, tostring(entity.get_fluid_box_prototype(i).production_type) .. "/"
+        .. tostring((entity.get_fluid_filter(i) or {}).name))
     end
     local r = entity.get_recipe()
     error(entity.name .. ": no " .. kind .. " box" .. (fluid and (" for " .. fluid) or "") .. "; recipe "
       .. (r and r.name or "none") .. "; boxes " .. table.concat(have, ", "))
   end
-  local function target(entity, index) return entity.fluidbox.get_pipe_connections(index)[1].target_position end
+  local function target(entity, index) return entity.get_fluid_box_pipe_connections(index)[1].target_position end
   local jt, crude_in, petro_out = target(jack, 1), box(ref, "input"), box(ref, "output")
   -- Around the refinery's north side (a straight line ran through it).
   pipe(jt.x, jt.y, jt.x, crude_in.y - 1)
@@ -592,7 +592,7 @@ script.on_nth_tick(35800, function(event)
     -- A boiler counts when it holds fuel and makes steam (its status flickers at a given tick).
     local made = e.valid and (e.type == "boiler"
       and ((e.get_fuel_inventory().get_item_count("coal") > 0 or e.burner.currently_burning)
-        and e.fluidbox[2] and e.fluidbox[2].amount > 0 and 1 or 0)
+        and e.get_fluid(2) and e.get_fluid(2).amount > 0 and 1 or 0)
       or e.products_finished) or 0
     local status = e.valid and e.status
     for k, v in pairs(defines.entity_status) do if v == status then status = k end end

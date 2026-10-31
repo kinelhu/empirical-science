@@ -474,8 +474,8 @@ script.on_init(function()
     -- A third line, heated for real: the premix at 15 through a burner fluid heater (60) into its hopper.
     local h = place("es-fluid-heater", gx + 14, gy + 16, N)
     h.insert{name = "nuclear-fuel", count = 1}  -- lasts hours at a heater's draw
-    local inp = h.fluidbox.get_pipe_connections(1)[1].target_position
-    local out = h.fluidbox.get_pipe_connections(2)[1].target_position
+    local inp = h.get_fluid_box_pipe_connections(1)[1].target_position
+    local out = h.get_fluid_box_pipe_connections(2)[1].target_position
     pipe_in(inp.x, inp.y, LP, 15)
     place("es-fluid-hopper", out.x, out.y - 0.5, N)   -- (1x2: the heater's output tile and the one above)
     local my = out.y - 3
@@ -640,8 +640,8 @@ space_age_areas = function()
     local px, py = fluid_hopper(b.position.x + 2, b.position.y, 1, 0)
     local ch = place("es-fluid-chiller", px, py + 3.5, N)
     ch.insert{name = "es-cold-charge", count = 20}
-    local inp = ch.fluidbox.get_pipe_connections(1)[1].target_position
-    local out = ch.fluidbox.get_pipe_connections(2)[1].target_position
+    local inp = ch.get_fluid_box_pipe_connections(1)[1].target_position
+    local out = ch.get_fluid_box_pipe_connections(2)[1].target_position
     pipe_in(inp.x, inp.y, LP, 15)
     for y = out.y, py, -1 do place("pipe", out.x, y) end
     dose(b, {[LP] = 40})
@@ -659,8 +659,8 @@ space_age_areas = function()
     local LP = storage.kit_liquid and storage.kit_liquid.name
     local h = place("es-pressure-heater", 0, 10, N)
     h.insert{name = "es-pressure-charge", count = 20}  -- (0.70: its only fuel)
-    local inp = h.fluidbox.get_pipe_connections(1)[1].target_position
-    local out = h.fluidbox.get_pipe_connections(2)[1].target_position
+    local inp = h.get_fluid_box_pipe_connections(1)[1].target_position
+    local out = h.get_fluid_box_pipe_connections(2)[1].target_position
     pipe_in(inp.x, inp.y, LP, 15)
     place("es-fluid-hopper", out.x, out.y - 0.5, N)   -- (1x2: the heater's output tile and the one above)
     local st, b = station_bench(out.x - 4, out.y - 3, "es-trial-gear-control", {{"iron-plate"}},
@@ -958,16 +958,16 @@ script.on_nth_tick(7000, function(event)
       table.insert(out, "fluid chiller (L): " .. table.concat(ks, ", "))
       local ch = K.chiller.entity
       if ch and ch.valid then
-        local function fb(i) local f = ch.fluidbox[i]; return f and string.format("%s %.0f @ %.0f", f.name, f.amount, f.temperature) or "empty" end
+        local function fb(i) local f = ch.get_fluid(i); return f and string.format("%s %.0f @ %.0f", f.name, f.amount, f.temperature) or "empty" end
         local h = s.find_entities_filtered{name = "es-fluid-hopper", position = ch.position, radius = 5}[1]
-        local hf = h and h.fluidbox[1]
+        local hf = h and h.get_fluid(1)
         table.insert(out, string.format("  chiller: charges %d, burning %.0f kJ, in %s, out %s, status %s; hopper %s",
           ch.get_fuel_inventory().get_item_count("es-cold-charge"), (ch.burner.remaining_burning_fuel or 0) / 1000,
           fb(1), fb(2), tostring(ch.status), hf and string.format("%.0f @ %.0f", hf.amount, hf.temperature) or "empty"))
         for _, e in pairs(s.find_entities_filtered{position = ch.position, radius = 7}) do
-          if e.fluidbox and #e.fluidbox > 0 then
+          if e.fluids_count > 0 then
             local parts = {}
-            for i = 1, #e.fluidbox do local f = e.fluidbox[i]; parts[i] = f and string.format("%s %.0f@%.0f", f.name, f.amount, f.temperature) or "-" end
+            for i = 1, e.fluids_count do local f = e.get_fluid(i); parts[i] = f and string.format("%s %.0f@%.0f", f.name, f.amount, f.temperature) or "-" end
             table.insert(out, string.format("    %s %.1f,%.1f: %s", e.name, e.position.x, e.position.y, table.concat(parts, " | ")))
           end
         end

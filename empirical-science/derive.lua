@@ -13,10 +13,13 @@ local CATEGORY = {
   {class = "chemistry", words = {"chemistry", "oil%-processing", "cryogenic", "organic"}},
   {class = "electronics", words = {"electronics", "electromagnetic"}},
 }
-local function category_class(category)
+-- A recipe lists several categories (Factorio 2.1): the first class in that order any of them names.
+local function category_class(categories)
   for _, c in ipairs(CATEGORY) do
     for _, w in ipairs(c.words) do
-      if category:find(w) then return c.class end
+      for _, category in ipairs(categories) do
+        if category:find(w) then return c.class end
+      end
     end
   end
 end
@@ -53,7 +56,7 @@ local function mix_of_recipe(r, depth, hand, withheld)
       n = n + 1
     end
   end
-  local cat = category_class(r.category or "crafting")
+  local cat = category_class(r.categories or {"crafting"})
   if n == 0 and not cat then return nil end
   local v = {}
   for _, c in ipairs(shared.process_classes) do v[c] = (n > 0 and acc[c] / n or 0) + (cat == c and 1 or 0) end
@@ -134,7 +137,7 @@ function derive.packs(registered)
   local out = {}
   for name in pairs(packs) do
     local r = data.raw.recipe[name]
-    if not taken[name] and not registered[name] and not name:find("^es%-") and data.raw.tool[name] and r then
+    if not taken[name] and not registered[name] and not name:find("^es%-") and (data.raw.item[name] or data.raw.tool[name]) and r then
       local m = derive.mix(r)
       local per_craft, made = 0, 0
       for _, ing in ipairs(r.ingredients or {}) do

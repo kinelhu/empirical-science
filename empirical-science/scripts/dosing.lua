@@ -327,8 +327,8 @@ take = function(machine, needs, require)
         local rec = storage.hoppers[unit]
         if rec and rec.port and rec.port.valid then
           for _, n in ipairs({name, shared.chilled_twin(name)}) do  -- (nil ends the list without a twin)
-            local f = rec.port.fluidbox[1]
-            local got = left > 0 and rec.port.remove_fluid{name = n, amount = left} or 0
+            local f = shared.fluid_at(rec.port, 1)
+            local got = left > 0 and rec.port.extract_fluid{name = n, amount = left} or 0
             if got > 0 and f and f.name == n then heat, taken = heat + f.temperature * got, taken + got end
             left = left - got
             if got > 0 then animate(unit) end

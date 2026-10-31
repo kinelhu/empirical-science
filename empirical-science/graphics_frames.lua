@@ -2,8 +2,8 @@
 -- that change between frames) and the full frame's size, for the shift.
 return {
   ["iris"] = {x = 19, y = 8, width = 28, height = 18, frame_width = 66, frame_height = 74},
-  ["north"] = {x = 0, y = 2, width = 80, height = 137, frame_width = 103, frame_height = 164},
-  ["east"] = {x = 5, y = 2, width = 125, height = 97, frame_width = 130, frame_height = 109},
-  ["south"] = {x = 0, y = 27, width = 103, height = 131, frame_width = 114, frame_height = 160},
-  ["west"] = {x = 1, y = 2, width = 123, height = 96, frame_width = 131, frame_height = 111},
+  ["north"] = {x = 0, y = 2, width = 103, height = 159, frame_width = 103, frame_height = 164},
+  ["east"] = {x = 5, y = 2, width = 125, height = 107, frame_width = 130, frame_height = 109},
+  ["south"] = {x = 0, y = 0, width = 114, height = 160, frame_width = 114, frame_height = 160},
+  ["west"] = {x = 0, y = 2, width = 131, height = 109, frame_width = 131, frame_height = 111},
 }

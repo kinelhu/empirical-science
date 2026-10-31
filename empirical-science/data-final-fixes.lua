@@ -54,10 +54,12 @@ end
 do
   local r = data.raw.recipe["scrap-recycling"]
   if r and data.raw.item[shared.scrap.item] then
-    table.insert(r.results, {type = "item", name = shared.scrap.item, amount = 1, probability = shared.scrap.rate})
+    table.insert(r.results, {type = "item", name = shared.scrap.item, amount = 1, independent_probability = shared.scrap.rate})
+    local of_recipe = {recycling = true}
+    for _, cat in ipairs(r.categories or {}) do of_recipe[cat] = true end
     for _, machine in pairs(data.raw.furnace) do
       for _, cat in ipairs(machine.crafting_categories or {}) do
-        if cat == r.category or cat == "recycling" then
+        if of_recipe[cat] then
           machine.result_inventory_size = math.max(machine.result_inventory_size or 0, #r.results)
         end
       end
@@ -112,7 +114,7 @@ if mods["space-age"] and data.raw.fluid["fluoroketone-cold"] and data.raw.techno
       twin.subgroup = "es-chilling"
       twin.order = (a.premix_of and "b-" or "a-") .. a.name
       data:extend({twin,
-        {type = "recipe", name = "es-chill-" .. a.name, category = "cryogenics", enabled = false, energy_required = 2,
+        {type = "recipe", name = "es-chill-" .. a.name, categories = {"cryogenics"}, enabled = false, energy_required = 2,
          icons = twin.icons, subgroup = "es-chilling", order = twin.order,
          localised_name = {"recipe-name.es-chill", base_name},
          ingredients = {{type = "fluid", name = a.name, amount = CH.amount},

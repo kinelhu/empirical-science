@@ -518,7 +518,7 @@ script.on_init(function()
     end
     local f = place("stone-furnace", 126, 12)
     f.get_inventory(defines.inventory.fuel).insert{name = "coal", count = 50}
-    f.get_inventory(defines.inventory.furnace_source).insert{name = "iron-plate", count = 100}
+    f.get_inventory(defines.inventory.crafter_input).insert{name = "iron-plate", count = 100}
     local fh = place("es-hopper", 126, 10)
     fh.get_inventory(defines.inventory.chest).insert{name = best, count = 100}
     es("set_dose", f.unit_number, {rows = rows_of({[best] = 3})})
@@ -555,7 +555,7 @@ script.on_init(function()
     end
     local fd, fc = best_dose("iron-plate")
     local f = place("electric-furnace", 143, 12)
-    f.get_inventory(defines.inventory.furnace_source).insert{name = "iron-ore", count = 50}
+    f.get_inventory(defines.inventory.crafter_input).insert{name = "iron-ore", count = 50}
     local fh = place("es-hopper", 143, 10)
     fh.get_inventory(defines.inventory.chest).insert{name = agent, count = 50}
     es("set_dose", f.unit_number, {rows = rows_of({[agent] = fd})})
@@ -731,7 +731,7 @@ script.on_init(function()
     -- Its input and output connections, from the prototype, one tile outside the entity.
     local W = game.surfaces.nauvis
     for _, fb in ipairs({1, 2}) do
-      local conns = h.fluidbox.get_pipe_connections(fb)
+      local conns = h.get_fluid_box_pipe_connections(fb)
       for _, c in ipairs(conns) do
         if fb == 1 then
           local p = place("infinity-pipe", c.target_position.x, c.target_position.y)
@@ -750,8 +750,8 @@ script.on_init(function()
     for i, fuel in ipairs({5, 0}) do
       local c = place("es-fluid-chiller", 118 + 6 * (i - 1), 20, defines.direction.north)
       if fuel > 0 then c.insert{name = "es-cold-charge", count = fuel} end
-      local inp = c.fluidbox.get_pipe_connections(1)[1].target_position
-      local out = c.fluidbox.get_pipe_connections(2)[1].target_position
+      local inp = c.get_fluid_box_pipe_connections(1)[1].target_position
+      local out = c.get_fluid_box_pipe_connections(2)[1].target_position
       local ip = place("infinity-pipe", inp.x, inp.y)
       ip.set_infinity_pipe_filter{name = LP, percentage = 1, temperature = 15}
       -- A line of pipes beyond it (a write that lost the line's fluid would show as charges burned refilling it).
@@ -907,10 +907,10 @@ on_nth_tick(60, function(event)
     local e = r.entity
     if r.no_feed then  -- fed by its own inserter
     elseif key == "quality" then feed(e, "uncommon")
-    elseif key == "steel" then e.get_inventory(defines.inventory.furnace_source).insert{name = "iron-plate", count = 50}
+    elseif key == "steel" then e.get_inventory(defines.inventory.crafter_input).insert{name = "iron-plate", count = 50}
     else feed(e) end
     tend_hopper(r)
-    local out = e.get_inventory(key == "steel" and defines.inventory.furnace_result or defines.inventory.crafter_output)
+    local out = e.get_inventory(key == "steel" and defines.inventory.crafter_output or defines.inventory.crafter_output)
     for _, item in pairs(r.keep_output and {} or out.get_contents()) do
       r.made = r.made + item.count
       r.by_quality[item.quality] = (r.by_quality[item.quality] or 0) + item.count
@@ -1610,10 +1610,15 @@ on_nth_tick(END_TICK + 120, function(event)
     local novice = game.forces.novice or game.create_force("novice")
     novice.technologies["es-empirical-method"].researched = true
     local before, targets = es("pickable", "novice"), es("targets_for", "novice")
-    novice.get_item_production_statistics(game.surfaces.nauvis).on_flow("coal", 1)
+    -- (2.1: on_flow lands in the tick's sample, counted at the end of the tick; set the count to read it now.)
+    local function made(item)
+      local st = novice.get_item_production_statistics(game.surfaces.nauvis)
+      st.set_input_count(item, st.get_input_count(item) + 1)
+    end
+    made("coal")
     local after = es("pickable", "novice")
     local ash_before = before["es-spent-coal"]
-    novice.get_item_production_statistics(game.surfaces.nauvis).on_flow("es-spent-coal", 1)
+    made("es-spent-coal")
     check("a residue is offered once some has been made; dosing records residue as produced",
       not ash_before and es("pickable", "novice")["es-spent-coal"]
         and game.forces.player.get_item_production_statistics(game.surfaces.nauvis).get_input_count("es-spent-stone") > 0,
@@ -2162,7 +2167,7 @@ on_nth_tick(END_TICK + 120, function(event)
     check("temperature axis: a pressure heater to 500 on any surface; a chilled lubricant to -150",
       ph.target_temperature == 500 and cond == nil
         and twin and twin.default_temperature == -150 and twin.max_temperature == prototypes.fluid["lubricant"].default_temperature
-        and prototypes.recipe["es-chill-lubricant"].category == "cryogenics",
+        and prototypes.recipe["es-chill-lubricant"].categories[1] == "cryogenics",
       string.format("heater %s, condition %s, twin %s to %s", tostring(ph.target_temperature), serpent.line(cond),
         twin and twin.default_temperature, twin and twin.max_temperature))
     local ax = es("temp_axis_check")
@@ -2198,9 +2203,9 @@ on_nth_tick(END_TICK + 120, function(event)
     local result
     for _, p in pairs(r.products) do if p.name == "es-scrap-sample" then result = p end end
     check("scrap samples: a result of scrap recycling, the recycler holding every result",
-      result and result.probability == shared.scrap.rate and prototypes.entity["recycler"].get_inventory_size(defines.inventory.furnace_result) >= #r.products,
-      result and string.format("probability %s, %d results, %d slots", result.probability, #r.products,
-        prototypes.entity["recycler"].get_inventory_size(defines.inventory.furnace_result)))
+      result and result.independent_probability == shared.scrap.rate and prototypes.entity["recycler"].get_inventory_size(defines.inventory.crafter_output) >= #r.products,
+      result and string.format("probability %s, %d results, %d slots", result.independent_probability, #r.products,
+        prototypes.entity["recycler"].get_inventory_size(defines.inventory.crafter_output)))
     local base = es("scrap_targets")
     local has = function(list, key) for _, x in ipairs(list) do if x.key == key then return true end end end
     local force = game.forces.player
@@ -2726,7 +2731,7 @@ on_nth_tick(END_TICK + 120, function(event)
       if r then
         for _, ing in ipairs(r.ingredients) do
           local it = prototypes.item[ing.name]
-          if it and it.fuel_value > 0 and furnace_cats[r.category] then table.insert(bad, r.name .. " (" .. r.category .. ")") end
+          if it and it.fuel_value > 0 and furnace_cats[r.categories[1]] then table.insert(bad, r.name .. " (" .. r.categories[1] .. ")") end
         end
       end
     end
@@ -3193,15 +3198,15 @@ on_nth_tick(END_TICK + 120, function(event)
       math.abs(lub_usual - es("gain_mix", "gear", {lubricant = 40})) < 1e-12 and math.abs(lub_hot - lub_usual) > 1e-6,
       string.format("%+.2f%% at 25, %+.2f%% at 90", lub_usual * 100, lub_hot * 100))
     -- The burner fluid heater: water in at 15, out at 60.
-    local hot = storage.heater_out and storage.heater_out.fluidbox[1]
+    local hot = storage.heater_out and storage.heater_out.get_fluid(1)
     check("a fluid heater passes the same fluid on at its temperature (lubricant 25 -> 60)",
       hot and hot.name == "lubricant" and math.abs(hot.temperature - 60) < 0.5,
       hot and string.format("%s at %.1f", hot.name, hot.temperature) or "nothing out")
     if storage.chill then
       local fed, dry = storage.chill[1], storage.chill[2]
-      local o = fed.out.fluidbox[1]
+      local o = fed.out.get_fluid(1)
       local left = fed.entity.get_fuel_inventory().get_item_count("es-cold-charge")
-      local d = dry.out.fluidbox[1]
+      local d = dry.out.get_fluid(1)
       check("a fluid chiller passes a liquid premix on at the chilled cold, burning cold charges; with none, nothing",
         o and o.name == LP and math.abs(o.temperature - shared.chilled.temperature) < 0.5 and left < fed.fuel
           and left >= fed.fuel - 1 and not (d and d.amount > 0),

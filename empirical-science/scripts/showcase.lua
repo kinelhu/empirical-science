@@ -41,11 +41,11 @@ local function pipes(s, from, to, force)  -- horizontal first, then vertical
   while y ~= ty do y = y + (ty > y and 1 or -1); put() end
 end
 local function port_of(e, fluid)  -- where a pipe must stand to reach the fluid box holding `fluid`
-  local fb = e.fluidbox
-  for i = 1, #fb do
-    local f = fb.get_locked_fluid(i) or (fb.get_filter(i) or {}).name
+  for i = 1, e.fluids_count do
+    local filter = e.get_fluid_filter(i)
+    local f = filter and filter.name or (shared.fluid_at(e, i) or {}).name
     if not fluid or f == fluid then
-      local c = fb.get_pipe_connections(i)[1]
+      local c = e.get_fluid_box_pipe_connections(i)[1]
       if c then return c.target_position end
     end
   end
@@ -170,7 +170,7 @@ local function sources(s, force, c)
   local tank = s.find_entities_filtered{position = {cx - 21.5, cy + 19.5}, name = "storage-tank"}[1]
   if tank then
     local low
-    for _, cn in ipairs(tank.fluidbox.get_pipe_connections(1)) do
+    for _, cn in ipairs(tank.get_fluid_box_pipe_connections(1)) do
       if not low or cn.target_position.y > low.y then low = cn.target_position end
     end
     place(s, "pipe-to-ground", low.x, low.y, N, force)
